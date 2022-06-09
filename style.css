@@ -1,7 +1,7 @@
 table
 {
   width: 100px;
-  border: solid black 1px;  
+  border: solid black 2px;  
   font-weight: bold;
   font: Verdana;
   size: 1000000pt;
@@ -17,7 +17,7 @@ td[type="button"]
   background-color: #80E3D1;
   color: black;
   border: solid black 0px;
-  border-left: solid black 1px;
+  border-left: solid black 2px;
   text-align: center;
   font-weight: bold;
 }
@@ -35,8 +35,8 @@ td[type="buttonC"]
   background-color: #80E3D1;
   color: black;
   border: solid black 0px;
-  border-bottom: solid black 1px;
-  border-left: solid black 1px;
+  border-bottom: solid black 2px;
+  border-left: solid black 2px;
   text-align: center;
 }
 
@@ -45,7 +45,7 @@ td[type="text"]
   background-color:#80E3D1;
   color: white;
   border: solid black 0px;
-  border-bottom: solid black 1px;
+  border-bottom: solid black 2px;
   text-align: right;
 }
 
