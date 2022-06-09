@@ -4,6 +4,7 @@ table
   border: solid black 2px;  
   font-weight: bold;
   font: Verdana;
+  font-size: 12px;
 }
 
 td {
