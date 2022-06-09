@@ -6,6 +6,7 @@ table
   border: solid black 0.7vmin;  
   font-family: Lato;
   font-size: 6vmin;
+  font-weight: bold;
 }
 
 td {
