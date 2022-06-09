@@ -7,6 +7,12 @@ table
   size: 1000000pt;
 }
 
+
+td {
+  min-width: 30pt;
+  height: 30pt;
+}
+
 td[type="button"]
 {
   background-color: #80E3D1;
