@@ -1,0 +1,59 @@
+@font-face { font-family: Lato; font-weight: bold; src: url('Lato-bold.ttf');}
+
+table
+{
+  margin: auto;
+  border: solid black 0.7vmin;  
+  font-family: Lato;
+  font-size: 6vmin;
+}
+
+td {
+  min-width: 15vmin;
+  height: 15vmin;
+}
+
+td[type="button"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  border-left: solid black 0.7vmin;
+  text-align: center;
+  font-weight: bold;
+}
+
+td[type="buttonEq"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  text-align: center;
+}
+
+td[type="buttonC"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  border-bottom: solid black 0.7vmin;
+  border-left: solid black 0.7vmin;
+  text-align: center;
+}
+
+td[type="text"]
+{
+  background-color:#80E3D1;
+  color: white;
+  border: solid black 0px;
+  border-bottom: solid black 0.7vmin;
+  text-align: right;
+}
+
+td[type="number"]
+{
+  background-color: white;
+  color: black;
+  border: solid black 0px;
+  text-align: center;
+}
