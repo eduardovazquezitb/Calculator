@@ -1,0 +1,53 @@
+table
+{
+  width: 100px;
+  border: solid black 1px;  
+  font-weight: bold;
+  font: Verdana;
+  size: 1000000pt;
+}
+
+td[type="button"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  border-left: solid black 1px;
+  text-align: center;
+  font-weight: bold;
+}
+
+td[type="buttonEq"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  text-align: center;
+}
+
+td[type="buttonC"]
+{
+  background-color: #80E3D1;
+  color: black;
+  border: solid black 0px;
+  border-bottom: solid black 1px;
+  border-left: solid black 1px;
+  text-align: center;
+}
+
+td[type="text"]
+{
+  background-color:#80E3D1;
+  color: white;
+  border: solid black 0px;
+  border-bottom: solid black 1px;
+  text-align: right;
+}
+
+td[type="number"]
+{
+  background-color: white;
+  color: black;
+  border: solid black 0px;
+  text-align: center;
+}
