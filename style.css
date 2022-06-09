@@ -7,10 +7,9 @@ table
   size: 1000000pt;
 }
 
-
 td {
-  min-width: 30pt;
-  height: 30pt;
+  min-width: 10vmin;
+  height: 10vmin;
 }
 
 td[type="button"]
