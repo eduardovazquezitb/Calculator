@@ -54,12 +54,6 @@ td[id="td-c"]
 
 button
 {
-  min-width: inherit;
-  height: inherit;
-  background-color: transparent;
-  color: inherit;
-  text-align: inherit;
-  font-size: inherit;
-  font-family: inherit;
+  all: inherit;
   border: solid black 0px;
 }
