@@ -1,0 +1,65 @@
+@font-face { font-family: Kommon; font-weight: bold; src: url('./KommonGrotesk-Bold.ttf');}
+@font-face { font-family: Lato; font-weight: bold; src: url('./Lato-bold.ttf');}
+@font-face { font-family: Myriad; font-weight: bold; src: url('./MYRIADPRO-SEMIBOLD.OTF');}
+@font-face { font-family: Eloquia; font-weight: bold; src: url('./Typekiln - EloquiaDisplay-ExtraBold.otf');}
+
+table
+{
+  margin: auto;
+  border: solid black 0.7vmin;  
+  font-size: 6vmin;
+  text-align: center;
+  color: black;
+}
+
+td {
+  min-width: 15vmin;
+  height: 15vmin;
+  border: solid black 0px;
+  background-color:#80E3D1;
+}
+
+td[type="button"]
+{
+  border-left: solid black 0.7vmin;
+  font-family: Kommon;
+}
+
+td[type="text"]
+{
+  color: white;
+  border-bottom: solid black 0.7vmin;
+  text-align: right;
+  font-size: 6.8vmin;
+  height: 12.5vmin;
+  font-family: Myriad;
+}
+
+td[type="number"]
+{
+  background-color: white;
+  font-family: Myriad;
+}
+
+td[id="td-equals"]
+{
+  border: solid black 0px;
+}
+
+td[id="td-c"]
+{
+  border-bottom: solid black 0.7vmin;
+  height: 12.5vmin;
+}
+
+button
+{
+  min-width: inherit;
+  height: inherit;
+  background-color: transparent;
+  color: inherit;
+  text-align: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  border: solid black 0px;
+}
