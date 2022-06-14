@@ -95,6 +95,7 @@ function ConvertToFloat(text)
 function ResultDisplay(result)
 {
     if(Math.abs(result) > 9999999999) return 'BIG RESULT';
+    if(Math.abs(result) < 0.00000001 || result.toString().includes('e')) return '0';
     if(isNaN(result)) return 'INVALID OP';
     var partial = result.toString().replace('.',',').slice(0,10);
     if(partial.charAt(9)==',') partial = partial.slice(0,9);
