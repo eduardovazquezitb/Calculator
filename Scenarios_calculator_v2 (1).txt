@@ -1,0 +1,135 @@
+Feature: Calculator screen
+
+Scenario Outline: When a number button is pressed
+Given I have a <numberOnScreen> on screen
+When I press the number <Button>
+Then the number <screenLabel> is shown on screen
+
+Examples:
+|numberOnScreen|Button|screenLabel|
+|           123|   4  |       1234|
+|              |   0  |          0|
+|              |   1  |          1|
+|              |   2  |          2|
+|              |   3  |          3|
+|              |   4  |          4|
+|              |   5  |          5|
+|              |   6  |          6|
+|              |   7  |          7|
+|              |   8  |          8|
+|              |   9  |          9|
+|          9999|   8  |      99998|
+
+Scenario: Writing more than 10 digits
+Given I have a 10 digit number
+When I press a number button
+Then the digit is not added
+
+Scenario: When C button is pressed
+Given I have a number on screen
+When I press the C button
+Then the number displayed is erased
+
+Scenario: Writing a number with 1 comma
+Given I have a number in screen
+When I add a comma
+Then adds a comma to this number
+
+Scenario: Writing a number with more than 1 comma
+Given I have a number with one comma in screen
+When I add another comma
+Then the new comma is not added
+
+Scenario Outline: Doing an addition operation with a result number with less than 10 digits
+Given I have already written <firstNumber>
+When I press +
+And I write the <secondNumber>
+And I press  =
+Then the result <Result> of adding this 2 numbers is show on screen 
+
+Examples:
+|firstNumber|secondNumber|Result|
+|         24|           6|    30|
+|       24,2|         6,4|  30,6|
+|      13,14|       2,781|15,921|
+
+Scenario: Doing an addition operation with a result number with more than 10 digits
+Given I have already written a number
+When I press + button
+And I write a second number
+And I press = button
+Then show message: Result number bigger than 10 digits
+
+Scenario  Outline: Doing a minus operation with a result number with less than 10 digits
+Given I have already written <firstNumber>
+When I press -
+And I write <secondNumber>
+And I press =
+Then the result <Result> of substracting this 2 numbers is show in screen 
+
+Examples:
+|firstNumber|secondNumber|Result|
+|         24|           6|    18|
+|          6|          24|   -18|
+|       24,2|         6,4|  17,8|
+|      13,14|       2,781|10,359|
+
+Scenario Outline: Doing a multiplication operation with a result number with less than 10 digits
+Given I have already written <firstNumber>
+When I press *
+And I write <secondNumber>
+And I press =
+Then the result <Result> of multipliyng this 2 numbers is show in screen 
+
+Examples:
+|firstNumber|secondNumber|Result|
+|         10|           8|    80|
+|        5,2|           8|  41,6|
+|      36,25|       7,496|271,73|
+
+Scenario: Doing an multiplication operation with a result number with more than 10 digits
+Given I have already written a number
+When I press the * button
+And I write another number
+And I press the = button
+Then show message: Result number bigger than 10 digits
+
+Scenario Outline: Doing a division operation with a result number with less than 10 digits
+Given I have already written a <firstNumber>
+When I press /
+And I write the <secondNumber>
+And I press =
+Then the result <Result> is shown on screen
+
+Examples:
+|firstNumber|secondNumber|    Result|
+|         10|           2|         5|
+|         84|         4,3|19,5348837|
+|      23,58|       10,14|2,32544379|
+
+Scenario: A division with a result with more than 10 digits
+Given a number
+When I press the / button
+And I write another number
+And I press = button
+Then show message: Result number bigger than 10 digits
+
+Scenario Outline: Clicking two different operation buttons
+Given I have already written a <firstNumber>
+And I pressed an operation <Button>
+And I pressed an operation <Button2> 
+And I pressed a <secondNumber> number
+When I press the = button
+Then the result <Result> is shown on screen
+
+|firstNumber|Button|Button2|secondNumber|Result|
+|         12|   +  |   -   |           6|     6|
+|       1234|   -  |   +   |          31|  1265|
+|       9,26|   *  |   *   |       2,15 |19,909|
+
+Scenario: Division with 0
+Given I have already written a first number
+And I press /
+And I write the second number as a 0 
+When I press =
+Then show message: You can't divide by 0

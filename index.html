@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js"></script>
+    <title>Calculator</title>
+    <link rel="shortcut icon" type="png" href="favicon.png"/>
+  </head>
+  <body>
+    <table class="calculator" cellspacing="0" cellpadding="0">
+      <tr id="display-row">
+         <td id="display-result" colspan="3" type="text">
+            <label id="display-text">CALCULATE</label>
+         </td>
+         <td id="td-c" type="button"><button id="button-c" type="button" onclick="ButtonC()">C</button> </td>
+      </tr>
+      <tr id="first-number-row">
+         <td id="td-7"      type="number"><button id="button-7"      onclick="Input(7)">7</button></td>
+         <td id="td-8"      type="number"><button id="button-8"      onclick="Input(8)">8</button></td>
+         <td id="td-9"      type="number"><button id="button-9"      onclick="Input(9)">9</button></td>
+         <td id="td-divide" type="button"><button id="button-divide" onclick="Operator('divide')">/</button></td>
+      </tr>
+      <tr id="second-number-row">
+         <td id="td-4"        type="number"><button id="button-4"    onclick="Input(4)">4</button></td>
+         <td id="td-5"        type="number"><button id="button-5"    onclick="Input(5)">5</button></td>
+         <td id="td-6"        type="number"><button id="button-6"    onclick="Input(6)">6</button></td>
+         <td id="td-multiply" type="button"><button id="button-multiply" onclick="Operator('multiply')">x</button></td>
+      </tr>
+      <tr id="third-number-row">
+         <td id="td-1"     type="number"><button id="button-1"       onclick="Input(1)">1</button></td>
+         <td id="td-2"     type="number"><button id="button-2"       onclick="Input(2)">2</button></td>
+         <td id="td-3"     type="number"><button id="button-3"       onclick="Input(3)">3</button></td>
+         <td id="td-minus" type="button"><button id="button-minus"   onclick="Operator('minus')">&minus;</button></td>  
+      </tr>
+      <tr id="equals-row">
+         <td id="td-comma"  type="number"><button id="button-comma"  onclick="InputComma()">,</button></td>
+         <td id="td-0"      type="number"><button id="button-0"      onclick="Input(0)">0</button></td>
+         <td id="td-equals" type="button"><button id="button-equals" onclick="Equals()">=</button></td>
+         <td id="td-plus"   type="button"><button id="button-plus"   onclick="Operator('plus')">+</button></td>
+      </tr>
+   </table>
+  </body>
+</html>
