@@ -1,6 +1,6 @@
 var firstNumber;
 var secondNumber;
-var operator = "";
+var operator = '';
 
 /*Number input methods*/
 
@@ -40,7 +40,7 @@ function InputComma()
 function ButtonC()
 {
     var display = document.getElementById('display-text');
-    display.textContent = "";
+    display.textContent = '';
 }
 
 /*Operators (divide, multiply, minus, plus)*/
@@ -55,6 +55,7 @@ function Operator(button)
     }
     operator = button;
     console.log('firstNumber ' + firstNumber + ' ' + operator);
+    HighLight(operator);
 }
 
 function Equals()
@@ -81,7 +82,9 @@ function Equals()
         display.textContent = ResultDisplay(result);
         console.log('secondNumber ' + secondNumber + ' = result ' + result)
         operator = '';
+        firstNumber = '';
     }
+    HighLight('');
 }
 
 /*Auxiliary Functions*/
@@ -118,4 +121,35 @@ function HasUnusedDecimalDigits(text)
 {
     if(! text.includes(',')) return false;
     return text[text.length-1]==',' || text[text.length-1]=='0';
+}
+
+function HighLight(text)
+{
+    var divide = document.getElementById('td-divide');
+    var multiply = document.getElementById('td-multiply');
+    var minus = document.getElementById('td-minus');
+    var plus = document.getElementById('td-plus');
+
+    var colorHighLight = '#31CFB2';
+
+    if(text=='divide')
+        divide.style.backgroundColor = colorHighLight;
+    else
+        divide.style.backgroundColor = '#80E3D1';
+
+    if(text=='multiply')
+        multiply.style.backgroundColor = colorHighLight;
+    else
+        multiply.style.backgroundColor = '#80E3D1';
+
+    if(text=='minus')
+        minus.style.backgroundColor = colorHighLight;
+    else
+        minus.style.backgroundColor = '#80E3D1';
+
+    if(text=='plus')
+        plus.style.backgroundColor = colorHighLight;
+    else
+        plus.style.backgroundColor = '#80E3D1';
+
 }
