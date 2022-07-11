@@ -151,5 +151,4 @@ function HighLight(text)
         plus.style.backgroundColor = colorHighLight;
     else
         plus.style.backgroundColor = '#80E3D1';
-
 }
