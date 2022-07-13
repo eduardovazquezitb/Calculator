@@ -42,6 +42,13 @@
   font-family: Myriad;
 }
 
+.calculator #buttons-row > td 
+{
+  border-bottom: solid black 3px;/*0.7vmin;*/
+  border-left: 0px;
+  height: 55px;
+}
+
 .calculator #td-equals
 {
   border: solid black 0px;
