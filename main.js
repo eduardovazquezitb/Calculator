@@ -2,6 +2,7 @@ var firstNumber;
 var secondNumber;
 var operator = '';
 var previousNumber = false;
+var elementHighlighted = '';
 
 /*Connecting all buttons*/
 
@@ -30,7 +31,6 @@ window.addEventListener('DOMContentLoaded', () => {
 /*Connecting all keys*/
 
 document.addEventListener("keydown", function(event) {
-    console.log(event);
     switch (event.key) {
         case '0':
             Input(0);
@@ -100,26 +100,29 @@ document.addEventListener("keydown", function(event) {
 function Input(digit)
 {
     var display = document.getElementById('display-text');
-    if(IsEmptyText(display.textContent))
-        display.textContent = '';
-    var max = (display.textContent[0] == '-' ? 11 : 10)
-    switch(display.textContent.length)
+    var resultat = display.textContent;
+    if(IsEmptyText(resultat))
+        resultat = '';
+
+    switch(TrueLength(resultat))
     {
         case 0:
-            display.textContent = digit;
+            resultat = digit;
             break;
         case 1:
-            if(display.textContent == '0')
-                display.textContent = digit;
+            if(resultat == '0')
+                resultat = digit;
             else
-                display.textContent = display.textContent.concat(digit);
-                break;
-        case max:
+                resultat = resultat.concat(digit);
+            break;
+        case 10:
             break;
         default:
-            display.textContent = display.textContent.concat(digit);
+            resultat = resultat.concat(digit);
             break;
     }
+
+    display.textContent = resultat;
     previousNumber = false;
 }
 
@@ -128,7 +131,7 @@ function InputComma()
     var display = document.getElementById('display-text');
     if(IsEmptyText(display.textContent))
         display.textContent = '0,';
-    else if(!display.textContent.includes(',') && display.textContent.length <= 8)
+    else if(!display.textContent.includes(',') && TrueLength(display.textContent) <= 9)
         display.textContent = display.textContent.concat(',');
     previousNumber = false;
 }
@@ -154,8 +157,7 @@ function ButtonChange()
 {
     var display = document.getElementById('display-text');
     var valor = ConvertToFloat(display.textContent);
-    if(previousNumber)
-    if(valor != 0 && valor != Infinity && valor == valor && valor != null)
+    if(valor != 0)
     {
         if(display.textContent[0] == '-')
             display.textContent = display.textContent.slice(1,display.textContent.length);
@@ -168,6 +170,11 @@ function ButtonChange()
 
 function Operator(button)
 {
+    if(operator != '' && !previousNumber)
+    {
+        Equals();
+        operator = '';
+    }
     if(operator == '')
     {
         var display = document.getElementById('display-text');
@@ -181,7 +188,7 @@ function Operator(button)
 
 function Equals()
 {
-    if(operator != ''){
+    if(operator != '' && !previousNumber){
         var display = document.getElementById('display-text');
         secondNumber = ConvertToFloat(display.textContent);
         var result;
@@ -207,24 +214,35 @@ function Equals()
         previousNumber = true;
         HighLight('');
     }
+    else if(operator != '' && previousNumber)
+    {
+        var display = document.getElementById('display-text');
+        display.textContent = 'ERROR';
+        console.log('= result ERROR');
+    }
 }
 
 /*Auxiliary Functions*/
 
+// Discounts sign and decimal comma
+function TrueLength(text)
+{
+    return text.length - (text.includes(',') ? 1 : 0 ) - (text[0] == '-' ? 1 : 0);
+}
+
 function ConvertToFloat(text)
 {
-    if(IsEmptyText(text)) return 0;
-    if(text == 'BIG RESULT') return Infinity;
-    if(text == 'INVALID OP') return NaN;
+    if(text == '') return 0;
+    if(text == 'ERROR') return NaN;
     return parseFloat(text.replace(',','.'));
 }
 
 function ResultDisplay(result)
 {
-    if(Math.abs(result) > 9999999999) return 'BIG RESULT';
+    if(Math.abs(result) > 9999999999) return 'ERROR';
     if(Math.abs(result) < 0.00000001 || result.toString().includes('e')) return '0';
-    if(isNaN(result)) return 'INVALID OP';
-    var length = 10 + (result < 0 ? 11 : 10);
+    if(isNaN(result) || !(result==result)) return 'ERROR';
+    var length = 10 + (result < 0 ? 1 : 0) + (result.toString().includes('.') ? 1 : 0);
     var partial = result.toString().replace('.',',').slice(0,length);
     while(HasUnusedDecimalDigits(partial))
     {
@@ -235,7 +253,7 @@ function ResultDisplay(result)
 
 function IsEmptyText(text)
 {
-    if(text == '' || text == '0' || previousNumber) return true;
+    if(text == '' || text == 'ERROR' || previousNumber) return true;
     return false;
 }
 
@@ -247,30 +265,17 @@ function HasUnusedDecimalDigits(text)
 
 function HighLight(text)
 {
-    var divide = document.getElementById('td-divide');
-    var multiply = document.getElementById('td-multiply');
-    var minus = document.getElementById('td-minus');
-    var plus = document.getElementById('td-plus');
-
     var colorHighLight = '#31CFB2';
 
-    if(text=='divide')
-        divide.style.backgroundColor = colorHighLight;
-    else
-        divide.style.backgroundColor = '#80E3D1';
-
-    if(text=='multiply')
-        multiply.style.backgroundColor = colorHighLight;
-    else
-        multiply.style.backgroundColor = '#80E3D1';
-
-    if(text=='minus')
-        minus.style.backgroundColor = colorHighLight;
-    else
-        minus.style.backgroundColor = '#80E3D1';
-
-    if(text=='plus')
-        plus.style.backgroundColor = colorHighLight;
-    else
-        plus.style.backgroundColor = '#80E3D1';
+    if(elementHighlighted != '')
+    {
+        var unhighlight = document.getElementById(elementHighlighted);
+        unhighlight.style.backgroundColor = '#80E3D1';
+    }
+    if(text != '')
+    {
+        elementHighlighted = 'td-'+text;
+        var highlight = document.getElementById(elementHighlighted);
+        highlight.style.backgroundColor = colorHighLight;
+    }
 }
