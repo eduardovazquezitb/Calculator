@@ -157,7 +157,7 @@ function ButtonChange()
 {
     var display = document.getElementById('display-text');
     var valor = ConvertToFloat(display.textContent);
-    if(valor != 0)
+    if(valor != 0 && !IsEmptyText(display.textContent))
     {
         if(display.textContent[0] == '-')
             display.textContent = display.textContent.slice(1,display.textContent.length);
