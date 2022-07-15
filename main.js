@@ -237,13 +237,28 @@ function ConvertToFloat(text)
     return parseFloat(text.replace(',','.'));
 }
 
-function ResultDisplay(result)
+function ResultDisplay(number)
 {
-    if(Math.abs(result) > 9999999999) return 'ERROR';
-    if(Math.abs(result) < 0.00000001 || result.toString().includes('e')) return '0';
-    if(isNaN(result) || !(result==result)) return 'ERROR';
-    var length = 10 + (result < 0 ? 1 : 0) + (result.toString().includes('.') ? 1 : 0);
-    var partial = result.toString().replace('.',',').slice(0,length);
+    if(Math.abs(number) > 9999999999) return 'ERROR';
+    if(Math.abs(number) < 0.00000001 || number.toString().includes('e')) return '0';
+    if(isNaN(number) || !(number==number)) return 'ERROR';
+    var resultat = number.toString();
+    if(resultat.includes('.')) resultat = CorrectDecimalDigits(resultat);
+    return resultat;
+}
+
+function CorrectDecimalDigits(text)
+{
+    var length1 = 11 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
+    text = text.slice(0, length1);
+    if(text[length1-1]>=5)
+    {
+        var number = parseFloat(text)+(10-parseFloat(text[length1-1]))*Math.pow(10, -length1+text.indexOf('.')+1);
+        console.log(number);
+        text = number.toString();
+    }
+    var length2 = 10 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
+    var partial = text.replace('.',',').slice(0,length2);
     while(HasUnusedDecimalDigits(partial))
     {
         partial = partial.slice(0,partial.length-1);
@@ -251,16 +266,16 @@ function ResultDisplay(result)
     return partial;
 }
 
+function HasUnusedDecimalDigits(text)
+{
+    if(!text.includes(',')) return false;
+    return text[text.length-1]==',' || text[text.length-1]=='0';
+}
+
 function IsEmptyText(text)
 {
     if(text == '' || text == 'ERROR' || previousNumber) return true;
     return false;
-}
-
-function HasUnusedDecimalDigits(text)
-{
-    if(! text.includes(',')) return false;
-    return text[text.length-1]==',' || text[text.length-1]=='0';
 }
 
 function HighLight(text)

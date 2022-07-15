@@ -100,6 +100,8 @@ Examples:
 |            0,| +/-  |           0,|
 |           13,| +/-  |         -13,|
 |          -13,| +/-  |          13,|
+|          -0,5| +/-  |          0,5|
+|           0,5| +/-  |         -0,5|
 |             7| +/-  |           -7|
 |          1234| +/-  |        -1234|
 |         -1234| +/-  |         1234|
@@ -184,11 +186,12 @@ Examples:
 |           -10|    *    |          -8|           80|
 |           -10|    *    |           8|          -80|
 |            10|    /    |           2|            5|
-|            84|    /    |         4,3|   19,5348837|
-|         23,58|    /    |       10,14|   2,32544379|
+|            84|    /    |         4,3|  19,53488372|
+|         23,58|    /    |       10,14|  2,325443787|
 |            10|    /    |          -2|           -5|
 |           -10|    /    |           2|           -5|
 |           -10|    /    |          -2|            5|
+
 
 Scenario Outline: Performing two number operations with a result number with more than 10 digits
 Given in the display screen the number 9999999999 is shown
@@ -197,11 +200,12 @@ And the user writes the number: <secondNumber>
 And the user press = 
 Then in the display screen should be show ERROR
 
+Examples:
 |numberOnScreen|operator |secondNumber|
-|     999999999|    +    |           1|
-|            -1|    -    |  -999999999|
-|     999999999|    *    |           2|
-|     999999999|    /    |         0,1|
+|    9999999999|    +    |           1|
+|            -1|    -    |  9999999999|
+|    9999999999|    *    |           2|
+|    9999999999|    /    |         0,1|
 
 Scenario Outline: Clicking two different operation buttons
 Given in the display screen the number <firstNumber> is shown
@@ -211,6 +215,7 @@ And the user writes the number <secondNumber>
 When the user presses the =  
 Then the display screen shows <resultDisplay>
 
+Examples:
 |firstNumber|Button|Button2|secondNumber|resultDisplay|
 |         12|   +  |   /   |           6|            2|
 |       1234|   -  |   +   |          31|         1265|
@@ -225,6 +230,7 @@ And the operation result <resultDisplay> is shown
 When the user writes the number <thirdNumber>
 Then the display screen shows <thirdNumber>
 
+Examples:
 |firstNumber|Button|secondNumber|resultDisplay|thirdNumber|
 |       12,2|   +  |           6|         18,2|         13|
 | 1234567890|   +  |           1|   1234567891|        -24|
@@ -240,6 +246,7 @@ And the user writes the number <thirdNumber>
 And the user presses the =
 Then the display screen shows <resultDisplay2>
 
+Examples:
 |firstNumber|Button|secondNumber|resultDisplay|Button2|thirdNumber|resultDisplay2|
 |       12,2|   +  |           6|         18,2|   +   |         13|          31,2|
 |        123|   -  |       -24,8|        147,8|   *   |         12|        1773,6|
@@ -255,17 +262,24 @@ And the user writes the number <thirdNumber>
 And the user presses the =
 Then the display screen shows <resultDisplay2>
 
+Examples:
 |firstNumber|Button|secondNumber|resultDisplay|Button2|thirdNumber|resultDisplay2|
 |       12,2|   +  |           6|         18,2|   +   |         13|          31,2|
 |        123|   -  |       -24,8|        147,8|   *   |         12|        1773,6|
 | 1234567890|   /  |        -2,5|   -493827156|   -   |        147|    -493827303|
 
-Scenario: Division with 0
-Given in the display screen the number 23 is shown
+Scenario Outline: Division with 0
+Given in the display screen the number <numberOnScreen> is shown
 And the user press /
 And the user writes the number: 0
 When the user press the =  
 Then in the display screen should be show ERROR
+
+Examples:
+|numberOnScreen|
+|             1|
+|            -1|
+|             0|
 
 Scenario Outline: Doing an operation without a second number
 Given in the display screen the number 23 is shown
