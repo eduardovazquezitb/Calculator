@@ -25,6 +25,7 @@ Examples:
 |             0|   9  |             9 |
 |             0|   ,  |            0, |
 |             1|   C  |             0 |
+|           173|   C  |             0 |
 |             1| +/-  |           -1  |
 
 Scenario Outline: Clicking operators screen buttons
@@ -66,8 +67,10 @@ Examples:
 |             0|   9  |             9 |
 |             0|   ,  |            0, |
 |             1|  ESC |             0 |
-|            -1|  Alt |             1 |
-|             1|  Alt |            -1 |
+|            -1|  Left Ctrl |             1 |
+|            -1| Right Ctrl |             1 |
+|             1| Right Ctrl |            -1 |
+|             1|  Left Ctrl |            -1 |
 
 Scenario Outline: Pressing operators keys
 When the user press the <Key> key
@@ -120,46 +123,6 @@ Examples:
 |    123456789,|    5   |  123456789,5|
 |   123456789,5|   +/-  | -123456789,5|
 
-Scenario Outline: Disabling buttons
-Given in the display screen the <numberOnScreen> is shown
-Then the numerical buttons and the comma button are disabled
-
-Examples:
-|numberOnScreen|
-|    1234567890|
-|   -1234567890|
-|   123456789,5|
-|  -123456789,5|
-
-Scenario: Disabling the second comma
-Given in the display screen the number 3,141592 is shown
-Then the comma button is disabled
-
-Scenario: Disabling because of error
-Given in the display screen an ERROR is displayed
-Then all buttons except the C button are disabled
-
-Scenario Outline: Reenabling buttons with no error
-Given there are unabled buttons
-And no ERROR on the display screen
-When I click on the button <button>
-Then all buttons are enabled again
-
-Examples:
-|button|
-|   C  |
-|   +  |
-|   -  |
-|   *  |
-|   /  |
-|   =  |
-
-Scenario: Reenabling buttons with error
-Given there are unabled buttons
-And there is an ERROR on the display screen
-When I click on the button C
-Then all buttons are enabled again
-
 Scenario Outline: Performing two number operations
 Given in the display screen the number <numberOnScreen> is shown
 When the user press the <operator>
@@ -192,6 +155,18 @@ Examples:
 |           -10|    /    |           2|           -5|
 |           -10|    /    |          -2|            5|
 
+Scenario Outline: Before clicking the equal button
+Given in the display screen the number <numberOnScreen> is shown
+When the user press the <operator>
+And the user writes the number: <secondNumber>                       
+Then in the display screen should be show a <resultDisplay>
+
+Examples:
+|numberOnScreen|operator |secondNumber|resultDisplay|
+|            24|    +    |           6|            6|
+|          24,2|    -    |         6,4|          6,4|
+|         13,14|    *    |       2,781|        2,781|
+|            84|    /    |        -4,3|         -4,3|
 
 Scenario Outline: Performing two number operations with a result number with more than 10 digits
 Given in the display screen the number 9999999999 is shown
@@ -206,6 +181,11 @@ Examples:
 |            -1|    -    |  9999999999|
 |    9999999999|    *    |           2|
 |    9999999999|    /    |         0,1|
+
+Scenario: Clicking the C button
+Given the user opens the Calculator
+When I click the C button
+Then the Calculator resets
 
 Scenario Outline: Clicking two different operation buttons
 Given in the display screen the number <firstNumber> is shown
@@ -281,8 +261,84 @@ Examples:
 |            -1|
 |             0|
 
-Scenario Outline: Doing an operation without a second number
+Scenario: Doing an operation without a second number
 Given in the display screen the number 23 is shown
 And the user press +
 And the user press the = 
 Then in the display screen should be show ERROR
+
+Scenario: Doing an operation without a first number
+Given the user opens the app
+And the user presses -
+And the user writes 23
+And the user presses the = 
+Then the display screen should show -23
+
+Scenario: Button Disabled
+Given in the display screen the -123456789,5 is shown
+When I hover over a numerical button
+Then the cursor does not change to a clicking cursor
+
+Scenario Outline: Disabling buttons
+Given in the display screen the <numberOnScreen> is shown
+Then the numerical buttons and the comma button are disabled
+
+Examples:
+|numberOnScreen|
+|    1234567890|
+|   -1234567890|
+|   123456789,5|
+|  -123456789,5|
+
+Scenario: Disabling the second comma
+Given in the display screen the number 3,141592 is shown
+Then the comma button is disabled
+
+Scenario: Disabling because of error
+Given in the display screen an ERROR is displayed
+Then all buttons except the C button are disabled
+
+Scenario Outline: Reenabling buttons with no error
+Given there are unabled buttons
+And no ERROR on the display screen
+When I click on the button <button>
+Then all buttons are enabled again
+
+Examples:
+|button|
+|   C  |
+|   +  |
+|   -  |
+|   *  |
+|   /  |
+|   =  |
+
+Scenario: Reenabling buttons with error
+Given there are unabled buttons
+And there is an ERROR on the display screen
+When I click on the button C
+Then all buttons are enabled again
+
+Scenario Outline: Showing the first number after pressing operation
+Given in the display screen the number <firstNumber> is shown
+When the user presses <Button>
+Then the display screen shows <firstNumber>
+
+Examples:
+|firstNumber|Button|
+|         13|   +  |
+|      -17,2|   -  |
+|     3,1415|   *  |
+|      -2718|   /  |
+
+Scenario Outline: Using the Equals button without operation
+Given the user opens the app
+And the user writes the number <firstNumber>
+When the user presses the = 
+Then the display screen should show <resultDisplay>
+
+Examples:
+|firstNumber|resultDisplay|
+|           |      0      |
+|         10|      10     |
+|       -10,|     -10     |

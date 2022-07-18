@@ -7,25 +7,7 @@ var elementHighlighted = '';
 /*Connecting all buttons*/
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("button-1").onclick = function(){Input(1)};
-    document.getElementById("button-2").onclick = function(){Input(2)};
-    document.getElementById("button-3").onclick = function(){Input(3)};
-    document.getElementById("button-4").onclick = function(){Input(4)};
-    document.getElementById("button-5").onclick = function(){Input(5)};
-    document.getElementById("button-6").onclick = function(){Input(6)};
-    document.getElementById("button-7").onclick = function(){Input(7)};
-    document.getElementById("button-8").onclick = function(){Input(8)};
-    document.getElementById("button-9").onclick = function(){Input(9)};
-    document.getElementById("button-0").onclick = function(){Input(0)};
-    document.getElementById("button-divide").onclick = function(){Operator('divide')};
-    document.getElementById("button-multiply").onclick = function(){Operator('multiply')};
-    document.getElementById("button-minus").onclick = function(){Operator('minus')};
-    document.getElementById("button-plus").onclick = function(){Operator('plus')};
-    document.getElementById("button-comma").onclick = function(){InputComma()};
-    document.getElementById("button-equals").onclick = function(){Equals()};
-    document.getElementById("button-c").onclick = function(){ButtonC()};
-    document.getElementById("button-ce").onclick = function(){ButtonCE()};
-    document.getElementById("button-change").onclick = function(){ButtonChange()};
+    EnableAll();
 });
 
 /*Connecting all keys*/
@@ -89,7 +71,7 @@ document.addEventListener("keydown", function(event) {
         case 'Backspace':
             ButtonCE();
             break;
-        case 's': case 'S':
+        case 'Control':
             ButtonChange();
             break;
     }
@@ -114,6 +96,12 @@ function Input(digit)
                 resultat = digit;
             else
                 resultat = resultat.concat(digit);
+                if(digit != 0) EnableCE();
+            break;
+        case 9:
+            resultat = resultat.concat(digit);
+            DisableNumbers();
+            DisableButton('comma');
             break;
         case 10:
             break;
@@ -134,6 +122,7 @@ function InputComma()
     else if(!display.textContent.includes(',') && TrueLength(display.textContent) <= 9)
         display.textContent = display.textContent.concat(',');
     previousNumber = false;
+    DisableButton('comma');
 }
 
 function ButtonC()
@@ -142,15 +131,24 @@ function ButtonC()
     display.textContent = '0';
     operator = '';
     HighLight('');
+    EnableAll();
 }
 
 function ButtonCE()
 {
     var display = document.getElementById('display-text');
-    if(display.textContent.length > 1 && !previousNumber) 
+    if(display.textContent.length > 1 && !previousNumber)
+    {
+        if(TrueLength(display.textContent) == 10)
+            EnableNumbers();
+        if(display.textContent[display.textContent.length-1] == ',')
+            EnableComma();
         display.textContent = display.textContent.slice(0,display.textContent.length-1);
-    else
+    }
+    else{
         display.textContent = '0';
+        DisableButton('ce');
+    }
 }
 
 function ButtonChange()
@@ -180,6 +178,7 @@ function Operator(button)
         var display = document.getElementById('display-text');
         firstNumber = ConvertToFloat(display.textContent);
         previousNumber = true;
+        EnableAll();
     }
     operator = button;
     console.log('firstNumber ' + firstNumber + ' ' + operator);
@@ -207,19 +206,138 @@ function Equals()
                 result = firstNumber + secondNumber;
                 break;
         }
+        
+        EnableAll();
+        HighLight('');
         display.textContent = ResultDisplay(result);
         console.log('secondNumber ' + secondNumber + ' = result ' + result)
         operator = '';
         firstNumber = '';
         previousNumber = true;
-        HighLight('');
     }
     else if(operator != '' && previousNumber)
     {
         var display = document.getElementById('display-text');
         display.textContent = 'ERROR';
         console.log('= result ERROR');
+        HighLight('');
+        DisableAll();
     }
+    else{
+        var display = document.getElementById('display-text');
+        if(display.textContent[display.textContent.length-1]==',')
+            display.textContent = display.textContent.substring(0, display.textContent.length-1);
+        previousNumber = true;
+        EnableAll();
+    }
+}
+
+/*Disabling buttons*/
+
+function EnableAll()
+{
+    EnableNumbers();
+    EnableComma();
+    EnableOperations();
+    EnableC();
+    DisableButton('ce');
+    EnableEquals();
+}
+
+function DisableAll()
+{
+    DisableNumbers();
+    DisableButton('comma');
+    DisableOperations();
+    DisableButton('ce');
+    DisableButton('equals');
+}
+
+function EnableNumbers()
+{
+    for(var i = 0; i<10; i++){
+        var button = document.getElementById('button-' + i.toString());
+        button.classList.remove('not-working-button');
+        button.classList.add('working-button');
+    }
+    document.getElementById("button-1").onclick = function(){Input(1)};
+    document.getElementById("button-2").onclick = function(){Input(2)};
+    document.getElementById("button-3").onclick = function(){Input(3)};
+    document.getElementById("button-4").onclick = function(){Input(4)};
+    document.getElementById("button-5").onclick = function(){Input(5)};
+    document.getElementById("button-6").onclick = function(){Input(6)};
+    document.getElementById("button-7").onclick = function(){Input(7)};
+    document.getElementById("button-8").onclick = function(){Input(8)};
+    document.getElementById("button-9").onclick = function(){Input(9)};
+    document.getElementById("button-0").onclick = function(){Input(0)};
+}
+
+function DisableNumbers()
+{
+    for(var i =0; i<10; i++)
+        DisableButton(i.toString());
+}
+
+function EnableOperations()
+{
+    let operation = ["divide", "multiply", "minus", "plus", "change"];
+    for(var i = 0; i<operation.length; i++){
+        var button = document.getElementById('button-' + operation[i]);
+        button.classList.remove('not-working-button');
+        button.classList.add('working-button');
+    }
+    document.getElementById("button-divide").onclick = function(){Operator('divide')};
+    document.getElementById("button-multiply").onclick = function(){Operator('multiply')};
+    document.getElementById("button-minus").onclick = function(){Operator('minus')};
+    document.getElementById("button-plus").onclick = function(){Operator('plus')};
+    document.getElementById("button-change").onclick = function(){ButtonChange()};
+}
+
+function DisableOperations()
+{
+    let operation = ["divide", "multiply", "minus", "plus", "change"];
+    for(var i =0; i<operation.length; i++)
+        DisableButton(operation[i]);
+}
+
+function EnableComma()
+{
+    var button = document.getElementById('button-comma');
+    button.classList.remove('not-working-button');
+    button.classList.add('working-button');
+    button.onclick = function(){InputComma()};
+}
+
+function EnableCE()
+{
+    var button = document.getElementById('button-ce');
+    button.classList.remove('not-working-button');
+    button.classList.add('working-button');
+    button.onclick = function(){ButtonCE()};
+}
+
+function EnableEquals()
+{
+    var button = document.getElementById('button-equals');
+    button.classList.remove('not-working-button');
+    button.classList.add('working-button');
+    button.onclick = function(){Equals()};
+}
+
+function EnableC()
+{
+    var button = document.getElementById('button-c');
+    button.classList.remove('not-working-button');
+    button.classList.add('working-button');
+    button.onclick = function(){ButtonC()};
+}
+
+function DisableButton(text)
+{
+    var button = document.getElementById('button-' + text);
+    button.classList.remove('working-button');
+    button.classList.add('not-working-button');
+    button.onclick = null;
 }
 
 /*Auxiliary Functions*/
@@ -239,9 +357,12 @@ function ConvertToFloat(text)
 
 function ResultDisplay(number)
 {
-    if(Math.abs(number) > 9999999999) return 'ERROR';
+    if(Math.abs(number) > 9999999999 || isNaN(number) || !(number==number) ) 
+    {
+        DisableAll();
+        return 'ERROR';
+    }
     if(Math.abs(number) < 0.00000001 || number.toString().includes('e')) return '0';
-    if(isNaN(number) || !(number==number)) return 'ERROR';
     var resultat = number.toString();
     if(resultat.includes('.')) resultat = CorrectDecimalDigits(resultat);
     return resultat;
@@ -253,8 +374,7 @@ function CorrectDecimalDigits(text)
     text = text.slice(0, length1);
     if(text[length1-1]>=5)
     {
-        var number = parseFloat(text)+(10-parseFloat(text[length1-1]))*Math.pow(10, -length1+text.indexOf('.')+1);
-        console.log(number);
+        var number = parseFloat(text)+(15-parseFloat(text[length1-1]))*Math.pow(10, -length1+text.indexOf('.')+1);
         text = number.toString();
     }
     var length2 = 10 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);

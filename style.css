@@ -71,8 +71,14 @@
   transition: 0.3s;
 }
 
-.calculator button:hover
+.calculator button:hover.working-button
 {
   cursor: pointer;
   background-color:  rgba(0, 0, 0, 0.07);
+}
+
+.calculator button:hover.not-working-button
+{
+  cursor: not-allowed;
+  background-color:  rgba(255, 0, 0, 0.33);
 }
