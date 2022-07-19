@@ -225,6 +225,9 @@ function Operator(button)
             Equals();
             operator = '';
         }
+    }
+    if(operationsEnabled)
+    {
         if(operator == '')
         {
             var display = document.getElementById('display-text');
