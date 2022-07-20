@@ -71,6 +71,11 @@
   transition: 0.3s;
 }
 
+.calculator button.not-working-button
+{
+  background-color:  rgba(255, 0, 0, 0.33);
+}
+
 .calculator button:hover.working-button
 {
   cursor: pointer;
@@ -80,5 +85,4 @@
 .calculator button:hover.not-working-button
 {
   cursor: not-allowed;
-  background-color:  rgba(255, 0, 0, 0.33);
 }

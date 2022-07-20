@@ -10,6 +10,7 @@ var commaEnabled = false;
 var ceEnabled = false;
 var equalsEnabled = false;
 var cEnabled = false;
+var changeEnabled = false;
 
 /*Connecting all buttons*/
 
@@ -34,11 +35,13 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("button-equals").onclick = function(){Equals()};
     document.getElementById("button-c").onclick = function(){ButtonC()};
     EnableAll();
+    DisableCESZ();
 });
 
 /*Connecting all keys*/
 
 document.addEventListener("keydown", function(event) {
+    event.preventDefault();
     switch (event.key) {
         case '0':
             Input(0);
@@ -112,7 +115,7 @@ function Input(digit)
         var display = document.getElementById('display-text');
         var resultat = display.textContent;
         if(IsEmptyText(resultat))
-            resultat = '';
+            resultat = '0';
 
         switch(TrueLength(resultat))
         {
@@ -123,11 +126,11 @@ function Input(digit)
                 if(resultat == '0')
                     resultat = digit;
                 else
-                    resultat = resultat.concat(digit);
-                    if(digit != 0) {
-                        EnableButton('ce');
-                        ceEnabled = true;
-                    }
+                    resultat = resultat.concat(digit);                
+                if(resultat != '0')
+                    EnableCESZ();
+                else
+                    DisableCESZ();
                 break;
             case 9:
                 resultat = resultat.concat(digit);
@@ -157,6 +160,9 @@ function InputComma()
         else if(!display.textContent.includes(',') && TrueLength(display.textContent) <= 9)
             display.textContent = display.textContent.concat(',');
         previousNumber = false;
+        EnableButton('ce');
+        ceEnabled = true;
+        EnableButton('0');
         DisableButton('comma');
         commaEnabled = false;
     }
@@ -179,7 +185,7 @@ function ButtonCE()
     if(ceEnabled)
     {
         var display = document.getElementById('display-text');
-        if(display.textContent.length > 1 && !previousNumber)
+        if(TrueLength(display.textContent) > 1 && !previousNumber)
         {
             if(TrueLength(display.textContent) == 10)
                 EnableNumbers();
@@ -189,11 +195,13 @@ function ButtonCE()
                 EnableButton('comma');
                 commaEnabled = true;
             }
+            if(display.textContent == '0'){
+                DisableCESZ();
+            }
         }
         else{
             display.textContent = '0';
-            DisableButton('ce');
-            ceEnabled = false;
+            EnableAll();
         }
     }
 }
@@ -234,6 +242,7 @@ function Operator(button)
             firstNumber = ConvertToFloat(display.textContent);
             previousNumber = true;
             EnableAll();
+            EnableButton('0');
         }
         operator = button;
         console.log('firstNumber ' + firstNumber + ' ' + operator);
@@ -265,6 +274,7 @@ function Equals()
             }
             
             EnableAll();
+            EnableButton('0');
             HighLight('');
             display.textContent = ResultDisplay(result);
             console.log('secondNumber ' + secondNumber + ' = result ' + result)
@@ -286,6 +296,7 @@ function Equals()
                 display.textContent = display.textContent.substring(0, display.textContent.length-1);
             previousNumber = true;
             EnableAll();
+            EnableButton('0');
         }
     }
 }
@@ -299,12 +310,10 @@ function EnableAll()
     EnableButton('comma');
     EnableButton('c');
     EnableButton('equals');
-    DisableButton('ce');
     commaEnabled = true;
     cEnabled = true;
     equalsEnabled = true;
-    ceEnabled = false;
-
+    DisableCESZ();
 }
 
 function DisableAll()
@@ -349,6 +358,24 @@ function DisableOperations()
     operationsEnabled = false;
 }
 
+function EnableCESZ()// CE, +/- and 0 button have a fundamentally similar behaviour
+{
+    let operation = ["ce", "change", "0"];
+    for(var i =0; i<operation.length; i++)
+        EnableButton(operation[i]);
+    ceEnabled = true;
+    changeEnabled = true;
+}
+
+function DisableCESZ() 
+{
+    let operation = ["ce", "change", "0"];
+    for(var i =0; i<operation.length; i++)
+        DisableButton(operation[i]);
+    ceEnabled = false;
+    changeEnabled = false;
+}
+
 function EnableButton(text)
 {
     var button = document.getElementById('button-' + text);
@@ -385,23 +412,16 @@ function ResultDisplay(number)
         DisableAll();
         return 'ERROR';
     }
-    if(Math.abs(number) < 0.00000001 || number.toString().includes('e')) return '0';
-    var resultat = number.toString();
+    if(Math.abs(number) < 0.000000001) return '0';
+    var resultat = number.toFixed(10);
     if(resultat.includes('.')) resultat = CorrectDecimalDigits(resultat);
     return resultat;
 }
 
 function CorrectDecimalDigits(text)
 {
-    var length1 = 11 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
-    text = text.slice(0, length1);
-    if(text[length1-1]>=5)
-    {
-        var number = parseFloat(text)+(15-parseFloat(text[length1-1]))*Math.pow(10, -length1+text.indexOf('.')+1);
-        text = number.toString();
-    }
-    var length2 = 10 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
-    var partial = text.replace('.',',').slice(0,length2);
+    var length = 10 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
+    var partial = text.replace('.',',').slice(0,length);
     while(HasUnusedDecimalDigits(partial))
     {
         partial = partial.slice(0,partial.length-1);
