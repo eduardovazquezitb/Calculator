@@ -289,7 +289,7 @@ And the user writes 23
 And the user presses the = 
 Then the display screen should show -23
 
-Scenario: Button Disabled
+Scenario: Button Disabled -> Do it on Figma
 Given in the display screen the -123456789,5 is shown
 When the user hovers over a numerical button
 Then the cursor does not change to a clicking cursor

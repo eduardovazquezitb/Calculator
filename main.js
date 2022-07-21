@@ -256,39 +256,23 @@ function Equals()
         if(operator != '' && !previousNumber){
             var display = document.getElementById('display-text');
             secondNumber = ConvertToFloat(display.textContent);
-            var result;
-            switch(operator)
-            {
-                case 'divide':
-                    result = firstNumber / secondNumber;
-                    break;
-                case 'multiply':
-                    result = firstNumber * secondNumber;
-                    break;
-                case 'minus':
-                    result = firstNumber - secondNumber;
-                    break;
-                case 'plus':
-                    result = firstNumber + secondNumber;
-                    break;
-            }
-            
+            var result = Calculate();
+        
             EnableAll();
             EnableButton('0');
             HighLight('');
-            display.textContent = ResultDisplay(result);
-            console.log('secondNumber ' + secondNumber + ' = result ' + result)
+            var screenText = ResultDisplay(result);
+            if(screenText != 'ERROR'){
+                display.textContent = screenText;
+                console.log('secondNumber ' + secondNumber + ' = result ' + result);
+            }
             operator = '';
             firstNumber = '';
             previousNumber = true;
         }
         else if(operator != '' && previousNumber)
         {
-            var display = document.getElementById('display-text');
-            display.textContent = 'ERROR';
-            console.log('= result ERROR');
-            HighLight('');
-            DisableAll();
+            ThrowError();
         }
         else{
             var display = document.getElementById('display-text');
@@ -299,6 +283,30 @@ function Equals()
             EnableButton('0');
         }
     }
+}
+
+function Calculate()
+{
+    switch(operator)
+    {
+        case 'divide':
+            return firstNumber / secondNumber;
+        case 'multiply':
+            return firstNumber * secondNumber;
+        case 'minus':
+            return firstNumber - secondNumber;
+        case 'plus':
+            return firstNumber + secondNumber;
+    }
+}
+
+function ThrowError()
+{
+    var display = document.getElementById('display-text');
+    display.textContent = 'ERROR';
+    console.log('= result ERROR');
+    HighLight('');
+    DisableAll();
 }
 
 /*Disabling buttons*/
@@ -409,12 +417,12 @@ function ResultDisplay(number)
 {
     if(Math.abs(number) > 9999999999 || isNaN(number) || !(number==number) ) 
     {
-        DisableAll();
+        ThrowError();
         return 'ERROR';
     }
     if(Math.abs(number) < 0.000000001) return '0';
     var resultat = number.toFixed(10);
-    if(resultat.includes('.')) resultat = CorrectDecimalDigits(resultat);
+    resultat = CorrectDecimalDigits(resultat);
     return resultat;
 }
 
