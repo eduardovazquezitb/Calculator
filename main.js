@@ -35,7 +35,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("button-equals").onclick = function(){Equals()};
     document.getElementById("button-c").onclick = function(){ButtonC()};
     EnableAll();
-    DisableCESZ();
+    DisableCES();
+    DisableButton('0');
 });
 
 /*Connecting all keys*/
@@ -128,9 +129,15 @@ function Input(digit)
                 else
                     resultat = resultat.concat(digit);                
                 if(resultat != '0')
-                    EnableCESZ();
+                {
+                    EnableCES();
+                    EnableButton('0');
+                }
                 else
-                    DisableCESZ();
+                {
+                    DisableCES();
+                    DisableButton('0');
+                }
                 break;
             case 9:
                 resultat = resultat.concat(digit);
@@ -177,6 +184,8 @@ function ButtonC()
         operator = '';
         HighLight('');
         EnableAll();
+        DisableCES();
+        DisableButton('0');
     }
 }
 
@@ -195,13 +204,20 @@ function ButtonCE()
                 EnableButton('comma');
                 commaEnabled = true;
             }
-            if(display.textContent == '0'){
-                DisableCESZ();
-            }
         }
-        else{
+        else
             display.textContent = '0';
+        
+        if(display.textContent == '0'){
             EnableAll();
+            DisableCES();
+            DisableButton('0');
+        }
+        else if(display.textContent == '0,')
+        {
+            EnableAll();
+            DisableButton('change');
+            changeEnabled = false;
         }
     }
 }
@@ -242,7 +258,7 @@ function Operator(button)
             firstNumber = ConvertToFloat(display.textContent);
             previousNumber = true;
             EnableAll();
-            EnableButton('0');
+            DisableCES();
         }
         operator = button;
         console.log('firstNumber ' + firstNumber + ' ' + operator);
@@ -259,7 +275,7 @@ function Equals()
             var result = Calculate();
         
             EnableAll();
-            EnableButton('0');
+            DisableCES();
             HighLight('');
             var screenText = ResultDisplay(result);
             if(screenText != 'ERROR'){
@@ -280,7 +296,7 @@ function Equals()
                 display.textContent = display.textContent.substring(0, display.textContent.length-1);
             previousNumber = true;
             EnableAll();
-            EnableButton('0');
+            DisableCES();
         }
     }
 }
@@ -321,18 +337,16 @@ function EnableAll()
     commaEnabled = true;
     cEnabled = true;
     equalsEnabled = true;
-    DisableCESZ();
 }
 
 function DisableAll()
 {
     DisableNumbers();
     DisableOperations();
+    DisableCES();
     DisableButton('comma');
-    DisableButton('ce');
     DisableButton('equals');
     commaEnabled = false;
-    ceEnabled = false;
     equalsEnabled = false;
 }
 
@@ -352,7 +366,7 @@ function DisableNumbers()
 
 function EnableOperations()
 {
-    let operation = ["divide", "multiply", "minus", "plus", "change"];
+    let operation = ["divide", "multiply", "minus", "plus"];
     for(var i = 0; i<operation.length; i++)
         EnableButton(operation[i]);
     operationsEnabled = true;
@@ -360,24 +374,24 @@ function EnableOperations()
 
 function DisableOperations()
 {
-    let operation = ["divide", "multiply", "minus", "plus", "change"];
+    let operation = ["divide", "multiply", "minus", "plus"];
     for(var i =0; i<operation.length; i++)
         DisableButton(operation[i]);
     operationsEnabled = false;
 }
 
-function EnableCESZ()// CE, +/- and 0 button have a fundamentally similar behaviour
+function EnableCES()// CE and +/-  button have a fundamentally similar behaviour
 {
-    let operation = ["ce", "change", "0"];
+    let operation = ["ce", "change"];
     for(var i =0; i<operation.length; i++)
         EnableButton(operation[i]);
     ceEnabled = true;
     changeEnabled = true;
 }
 
-function DisableCESZ() 
+function DisableCES() 
 {
-    let operation = ["ce", "change", "0"];
+    let operation = ["ce", "change"];
     for(var i =0; i<operation.length; i++)
         DisableButton(operation[i]);
     ceEnabled = false;
@@ -415,13 +429,13 @@ function ConvertToFloat(text)
 
 function ResultDisplay(number)
 {
-    if(Math.abs(number) > 9999999999 || isNaN(number) || !(number==number) ) 
+    if(Math.abs(number) >= 9999999999.5 || isNaN(number) || !(number==number) ) 
     {
         ThrowError();
         return 'ERROR';
     }
-    if(Math.abs(number) < 0.000000001) return '0';
-    var resultat = number.toFixed(10);
+    if(Math.abs(number) <= 0.0000000005) return '0';
+    var resultat = number.toFixed(9);
     resultat = CorrectDecimalDigits(resultat);
     return resultat;
 }
