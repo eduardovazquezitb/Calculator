@@ -216,7 +216,7 @@ function handleEqualsClick()
         if(operator != '' && !displayIsShowingPreviousNumber)
             setOperationResult();
         else if(operator != '' && displayIsShowingPreviousNumber)
-            ThrowError();
+            throwError();
         else
             setFirstNumber();
     }
@@ -249,7 +249,7 @@ function setOperationResult()
 
     var screenText = getResultDisplay(result);
     if(screenText == 'ERROR')
-        ThrowError();
+        throwError();
     else{
         setDisplayText(screenText);
         console.log('secondNumber ' + secondNumber + ' = result ' + result);
@@ -260,7 +260,7 @@ function setOperationResult()
     displayIsShowingPreviousNumber = true;
 }
 
-function ThrowError()
+function throwError()
 {
     setDisplayText('ERROR');
     console.log('= result ERROR');
