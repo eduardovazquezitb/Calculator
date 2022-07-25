@@ -1,4 +1,5 @@
 import {getNumberOfNumericalDigits, convertToFloat, getResultDisplay, getOperationResult} from './auxiliary.js';
+import {getDisplayText, setDisplayText, getButtonElement, setCellBackgroundColor} from './domCalls.js';
 
 var firstNumber;
 var secondNumber;
@@ -16,25 +17,25 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function connectingAllButtons(){
-    document.getElementById("button-1").onclick = function(){handleNumericalClick(1)};
-    document.getElementById("button-2").onclick = function(){handleNumericalClick(2)};
-    document.getElementById("button-3").onclick = function(){handleNumericalClick(3)};
-    document.getElementById("button-4").onclick = function(){handleNumericalClick(4)};
-    document.getElementById("button-5").onclick = function(){handleNumericalClick(5)};
-    document.getElementById("button-6").onclick = function(){handleNumericalClick(6)};
-    document.getElementById("button-7").onclick = function(){handleNumericalClick(7)};
-    document.getElementById("button-8").onclick = function(){handleNumericalClick(8)};
-    document.getElementById("button-9").onclick = function(){handleNumericalClick(9)};
-    document.getElementById("button-0").onclick = function(){handleNumericalClick(0)};
-    document.getElementById("button-divide").onclick = function(){handleOperatorClick('divide')};
-    document.getElementById("button-multiply").onclick = function(){handleOperatorClick('multiply')};
-    document.getElementById("button-minus").onclick = function(){handleOperatorClick('minus')};
-    document.getElementById("button-plus").onclick = function(){handleOperatorClick('plus')};
-    document.getElementById("button-change").onclick = function(){handleChangeSignClick()};    
-    document.getElementById("button-ce").onclick = function(){handleClearEntryClick()};
-    document.getElementById("button-comma").onclick = function(){handleCommaClick()};
-    document.getElementById("button-equals").onclick = function(){handleEqualsClick()};
-    document.getElementById("button-c").onclick = function(){handleClearDisplayClick()};
+    getButtonElement('1').onclick = function(){handleNumericalClick(1)};
+    getButtonElement('2').onclick = function(){handleNumericalClick(2)};
+    getButtonElement('3').onclick = function(){handleNumericalClick(3)};
+    getButtonElement('4').onclick = function(){handleNumericalClick(4)};
+    getButtonElement('5').onclick = function(){handleNumericalClick(5)};
+    getButtonElement('6').onclick = function(){handleNumericalClick(6)};
+    getButtonElement('7').onclick = function(){handleNumericalClick(7)};
+    getButtonElement('8').onclick = function(){handleNumericalClick(8)};
+    getButtonElement('9').onclick = function(){handleNumericalClick(9)};
+    getButtonElement('0').onclick = function(){handleNumericalClick(0)};
+    getButtonElement('divide').onclick = function(){handleOperatorClick('divide')};
+    getButtonElement('multiply').onclick = function(){handleOperatorClick('multiply')};
+    getButtonElement('minus').onclick = function(){handleOperatorClick('minus')};
+    getButtonElement('plus').onclick = function(){handleOperatorClick('plus')};
+    getButtonElement('change').onclick = function(){handleChangeSignClick()};    
+    getButtonElement('ce').onclick = function(){handleClearEntryClick()};
+    getButtonElement('comma').onclick = function(){handleCommaClick()};
+    getButtonElement('equals').onclick = function(){handleEqualsClick()};
+    getButtonElement('c').onclick = function(){handleClearDisplayClick()};
 }
 
 document.addEventListener("keydown", function(event) {
@@ -282,7 +283,7 @@ function setPositiveNumbersButtonsAvailability(isAvailable)
 function setButtonsAvailability(isAvailable, ...params) 
 {
     for(let i =0; i<params.length; i++){
-        var button = document.getElementById('button-' + params[i]);
+        var button = getButtonElement(params[i]);
         if(isAvailable){
             button.classList.remove('not-working-button');
             button.classList.add('working-button');
@@ -299,26 +300,13 @@ function setButtonsAvailability(isAvailable, ...params)
 function setButtonHighLight(text)
 {
     var colorHighLight = '#31CFB2';
+    var defaultColor = '#80E3D1';
 
     if(elementHighlighted != '')
-    {
-        var unhighlight = document.getElementById(elementHighlighted);
-        unhighlight.style.backgroundColor = '#80E3D1';
-    }
+        setCellBackgroundColor(elementHighlighted, defaultColor)
     if(text != '')
     {
-        elementHighlighted = 'td-'+text;
-        var highlight = document.getElementById(elementHighlighted);
-        highlight.style.backgroundColor = colorHighLight;
+        elementHighlighted = text;
+        setCellBackgroundColor(elementHighlighted, colorHighLight)
     }
-}
-
-function getDisplayText()
-{
-    return document.getElementById('display-text').textContent;
-}
-
-function setDisplayText(text)
-{
-    document.getElementById('display-text').textContent = text;
 }
