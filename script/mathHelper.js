@@ -18,7 +18,7 @@ export function getCountOfIntDigits(number, maxDigits)
     return text2.indexOf('.') - (text2[0]=='-' ? 1 : 0);
 }
 
-export function correctDecimalDigits(text, maxDigits)
+export function correctDecimalDigits(text)
 {
     var partial = text.replace('.',',');
     while(isDecimalPartEmpty(partial))

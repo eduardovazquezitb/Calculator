@@ -1,7 +1,9 @@
 import {getDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle} from './domCalls.js';
 import {getCountOfNumericalDigits} from './mathHelper.js';
 
-export function updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation)
+var elementHighlighted = '';
+
+export function updateButtonStatus(displayIsShowingPreviousNumber, operation)
 {
     var display = getDisplayText();
 
@@ -35,7 +37,7 @@ export function updateButtonStatus(displayIsShowingPreviousNumber, elementHighli
         setButtonsAvailability(isClearEntryAvailable, 'ce');
         setButtonsAvailability(isChangeSignAvailable, 'change');
     }
-    return setButtonHighLight(operation, elementHighlighted);
+    setButtonHighLight(operation);
 }
 
 export function initializeButtonStatus()
@@ -65,7 +67,7 @@ function setNonZeroNumbersButtonsAvailability(isAvailable)
     setButtonsAvailability(isAvailable, '1', '2', '3', '4', '5', '6', '7', '8', '9');
 }
 
-function setButtonHighLight(text, elementHighlighted)
+function setButtonHighLight(text)
 {
     var colorHighLight = '#31CFB2';
     var defaultColor = '#80E3D1';
@@ -77,5 +79,4 @@ function setButtonHighLight(text, elementHighlighted)
         elementHighlighted = text;
         setCellBackgroundColor(elementHighlighted, colorHighLight)
     }
-    return elementHighlighted;
 }

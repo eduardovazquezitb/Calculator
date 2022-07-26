@@ -12,7 +12,7 @@ var maxDigits = 10;
 window.addEventListener('DOMContentLoaded', () => {
     initializeButtonStatus();
     connectAllButtons();
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 });
 
 function connectAllButtons(){
@@ -81,30 +81,13 @@ function connectAllKeys(event)
 function handleNumericalClick(digit)
 {
     var display = getDisplayText();
-    if(displayIsShowingPreviousNumber)
-        display = '0';
-
-    switch(getCountOfNumericalDigits(display))
-    {
-        case 1:
-            if(display == '0')
-                display = digit;
-            else
-                display = display.concat(digit); 
-            break;
-        case maxDigits-1:
-            display = display.concat(digit);
-            break;
-        case maxDigits:
-            break;
-        default:
-            display = display.concat(digit);
-            break;
-    }
-
+    if(display == '0' || displayIsShowingPreviousNumber)
+        display = digit;
+    else
+        display = display.concat(digit);
     setDisplayText(display);
     displayIsShowingPreviousNumber = false;
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleCommaClick()
@@ -112,42 +95,38 @@ function handleCommaClick()
     var display = getDisplayText();
     if(displayIsShowingPreviousNumber)
         setDisplayText('0,');
-    else if(!display.includes(',') && getCountOfNumericalDigits(display) < maxDigits)
+    else
         setDisplayText(display.concat(','));
     displayIsShowingPreviousNumber = false;
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleClearDisplayClick()
 {
     setDisplayText('0');
     operation = '';
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleClearEntryClick()
 {
     var display = getDisplayText();
-    if(getCountOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
+    if(getCountOfNumericalDigits(display) > 1)
         display = display.slice(0,display.length-1);
     else
         display ='0';
-
     setDisplayText(display);
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleChangeSignClick()
 {
     var display = getDisplayText();
-    if(display != '0' && display != '0,' && !displayIsShowingPreviousNumber)
-    {
-        if(display[0] == '-')
-            setDisplayText(display.slice(1,display.length));
-        else
-            setDisplayText('-'.concat(display));
-    }
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    if(display[0] == '-')
+        setDisplayText(display.slice(1,display.length));
+    else
+        setDisplayText('-'.concat(display));
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleOperationClick(button)
@@ -161,7 +140,7 @@ function handleOperationClick(button)
         operation = button;
         console.log('firstNumber ' + firstNumber + ' ' + operation);
     }
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function handleEqualsClick()
@@ -172,7 +151,7 @@ function handleEqualsClick()
         throwError();
     else
         setFirstNumber();
-    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation);
 }
 
 function setFirstNumber()
@@ -186,15 +165,14 @@ function setFirstNumber()
 
 function setOperationResult()
 {
-    var display = getDisplayText();
-    var secondNumber = convertToFloat(display);
+    var secondNumber = convertToFloat(getDisplayText());
     var result = getOperationResult(firstNumber, secondNumber, operation);
 
-    var screenText = getResultDisplay(result);
-    if(screenText == 'ERROR')
+    var display = getResultDisplay(result);
+    if(display == 'ERROR')
         throwError();
     else{
-        setDisplayText(screenText);
+        setDisplayText(display);
         console.log('secondNumber ' + secondNumber + ' = result ' + result);
     }
 
@@ -205,11 +183,11 @@ function setOperationResult()
 
 function getResultDisplay(number)
 {
-    if(Math.abs(number) >= 9999999999.5 || isNaN(number) || !(number==number) ) return 'ERROR';
+    if(Math.abs(number) >= 9999999999.5 || isNaN(number) ) return 'ERROR';
     if(Math.abs(number) <= 0.0000000005) return '0';
     var numIntDigits = getCountOfIntDigits(number, maxDigits);
     var resultat = number.toFixed(maxDigits-numIntDigits);
-    resultat = correctDecimalDigits(resultat, maxDigits);
+    resultat = correctDecimalDigits(resultat);
     return resultat;
 }
 
