@@ -10,14 +10,19 @@ export function convertToFloat(text)
     return parseFloat(text.replace(',','.'));
 }
 
+export function getCountOfIntDigits(number, maxDigits)
+{
+    var text1 = number.toFixed(maxDigits - 1);
+    var countIntegerDigits1 = text1.indexOf('.') - (text1[0]=='-' ? 1 : 0);
+    var text2 = number.toFixed(maxDigits - countIntegerDigits1);
+    return text2.indexOf('.') - (text2[0]=='-' ? 1 : 0);
+}
+
 export function correctDecimalDigits(text, maxDigits)
 {
-    var length = maxDigits + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
-    var partial = text.replace('.',',').slice(0,length);
+    var partial = text.replace('.',',');
     while(isDecimalPartEmpty(partial))
-    {
         partial = partial.slice(0,partial.length-1);
-    } 
     return partial;
 }
 

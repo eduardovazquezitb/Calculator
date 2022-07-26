@@ -1,9 +1,8 @@
-import {getCountOfNumericalDigits, convertToFloat, correctDecimalDigits, getOperationResult} from './mathHelper.js';
-import {getDisplayText, setDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle, callButtonOnClick} from './domCalls.js';
+import {getCountOfNumericalDigits, convertToFloat, getCountOfIntDigits, correctDecimalDigits, getOperationResult} from './mathHelper.js';
+import {getDisplayText, setDisplayText, getButtonElement, callButtonOnClick} from './domCalls.js';
 import {updateButtonStatus, initializeButtonStatus} from './buttonStatusHelper.js';
 
 var firstNumber;
-var secondNumber;
 var operation = '';
 var displayIsShowingPreviousNumber = false;
 var elementHighlighted = '';
@@ -11,8 +10,8 @@ var elementHighlighted = '';
 var maxDigits = 10;
 
 window.addEventListener('DOMContentLoaded', () => {
-    connectAllButtons();
     initializeButtonStatus();
+    connectAllButtons();
     elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 });
 
@@ -130,9 +129,7 @@ function handleClearEntryClick()
 {
     var display = getDisplayText();
     if(getCountOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
-    {
         display = display.slice(0,display.length-1);
-    }
     else
         display ='0';
 
@@ -190,7 +187,7 @@ function setFirstNumber()
 function setOperationResult()
 {
     var display = getDisplayText();
-    secondNumber = convertToFloat(display);
+    var secondNumber = convertToFloat(display);
     var result = getOperationResult(firstNumber, secondNumber, operation);
 
     var screenText = getResultDisplay(result);
@@ -210,7 +207,8 @@ function getResultDisplay(number)
 {
     if(Math.abs(number) >= 9999999999.5 || isNaN(number) || !(number==number) ) return 'ERROR';
     if(Math.abs(number) <= 0.0000000005) return '0';
-    var resultat = number.toFixed(9);
+    var numIntDigits = getCountOfIntDigits(number, maxDigits);
+    var resultat = number.toFixed(maxDigits-numIntDigits);
     resultat = correctDecimalDigits(resultat, maxDigits);
     return resultat;
 }
