@@ -1,7 +1,7 @@
-@font-face { font-family: Kommon; font-weight: bold; src: url('./KommonGrotesk-Bold.ttf');}
-@font-face { font-family: Lato; font-weight: bold; src: url('./Lato-bold.ttf');}
-@font-face { font-family: Myriad; font-weight: bold; src: url('./MYRIADPRO-SEMIBOLD.OTF');}
-@font-face { font-family: Eloquia; font-weight: bold; src: url('./Typekiln - EloquiaDisplay-ExtraBold.otf');}
+@font-face { font-family: Kommon; font-weight: bold; src: url('../fonts/KommonGrotesk-Bold.ttf');}
+@font-face { font-family: Lato; font-weight: bold; src: url('../fonts/Lato-bold.ttf');}
+@font-face { font-family: Myriad; font-weight: bold; src: url('../fonts/MYRIADPRO-SEMIBOLD.OTF');}
+@font-face { font-family: Eloquia; font-weight: bold; src: url('../fonts/Typekiln - EloquiaDisplay-ExtraBold.otf');}
 
 .calculator
 {

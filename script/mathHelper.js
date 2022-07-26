@@ -1,4 +1,4 @@
-export function getNumberOfNumericalDigits(text)
+export function getCountOfNumericalDigits(text)
 {
     return text.length - (text.includes(',') ? 1 : 0 ) - (text[0] == '-' ? 1 : 0);
 }
@@ -10,27 +10,18 @@ export function convertToFloat(text)
     return parseFloat(text.replace(',','.'));
 }
 
-export function getResultDisplay(number)
+export function correctDecimalDigits(text, maxDigits)
 {
-    if(Math.abs(number) >= 9999999999.5 || isNaN(number) || !(number==number) ) return 'ERROR';
-    if(Math.abs(number) <= 0.0000000005) return '0';
-    var resultat = number.toFixed(9);
-    resultat = correctDecimalDigits(resultat);
-    return resultat;
-}
-
-function correctDecimalDigits(text)
-{
-    var length = 10 + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
+    var length = maxDigits + (text[0] == '-' ? 1 : 0) + (text.includes('.') ? 1 : 0);
     var partial = text.replace('.',',').slice(0,length);
-    while(hasUnusedDecimalDigits(partial))
+    while(isDecimalPartEmpty(partial))
     {
         partial = partial.slice(0,partial.length-1);
     } 
     return partial;
 }
 
-function hasUnusedDecimalDigits(text)
+function isDecimalPartEmpty(text)
 {
     if(!text.includes(',')) return false;
     return text[text.length-1]==',' || text[text.length-1]=='0';

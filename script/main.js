@@ -1,22 +1,25 @@
-import {getNumberOfNumericalDigits, convertToFloat, getResultDisplay, getOperationResult} from './auxiliary.js';
-import {getDisplayText, setDisplayText, getButtonElement, setCellBackgroundColor} from './domCalls.js';
+import {getCountOfNumericalDigits, convertToFloat, correctDecimalDigits, getOperationResult} from './mathHelper.js';
+import {getDisplayText, setDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle, callButtonOnClick} from './domCalls.js';
+import {updateButtonStatus} from './buttonStatusHelper.js';
 
 var firstNumber;
 var secondNumber;
-var operator = '';
+var operation = '';
 var displayIsShowingPreviousNumber = false;
 var elementHighlighted = '';
 var isButtonAvailable = new Map();
 
+var maxDigits = 10;
+
 window.addEventListener('DOMContentLoaded', () => {
-    connectingAllButtons();
+    connectAllButtons();
     setOperationButtonsAvailability(true);
-    setPositiveNumbersButtonsAvailability(true);
+    setNonZeroNumbersButtonsAvailability(true);
     setButtonsAvailability(true, 'c');
     setButtonsAvailability(false, '0', 'ce', 'change');
 });
 
-function connectingAllButtons(){
+function connectAllButtons(){
     getButtonElement('1').onclick = function(){handleNumericalClick(1)};
     getButtonElement('2').onclick = function(){handleNumericalClick(2)};
     getButtonElement('3').onclick = function(){handleNumericalClick(3)};
@@ -27,54 +30,55 @@ function connectingAllButtons(){
     getButtonElement('8').onclick = function(){handleNumericalClick(8)};
     getButtonElement('9').onclick = function(){handleNumericalClick(9)};
     getButtonElement('0').onclick = function(){handleNumericalClick(0)};
-    getButtonElement('divide').onclick = function(){handleOperatorClick('divide')};
-    getButtonElement('multiply').onclick = function(){handleOperatorClick('multiply')};
-    getButtonElement('minus').onclick = function(){handleOperatorClick('minus')};
-    getButtonElement('plus').onclick = function(){handleOperatorClick('plus')};
+    getButtonElement('divide').onclick = function(){handleOperationClick('divide')};
+    getButtonElement('multiply').onclick = function(){handleOperationClick('multiply')};
+    getButtonElement('minus').onclick = function(){handleOperationClick('minus')};
+    getButtonElement('plus').onclick = function(){handleOperationClick('plus')};
     getButtonElement('change').onclick = function(){handleChangeSignClick()};    
     getButtonElement('ce').onclick = function(){handleClearEntryClick()};
     getButtonElement('comma').onclick = function(){handleCommaClick()};
     getButtonElement('equals').onclick = function(){handleEqualsClick()};
     getButtonElement('c').onclick = function(){handleClearDisplayClick()};
+    updateButtonStatus();
 }
 
 document.addEventListener("keydown", function(event) {
     event.preventDefault();
-    connectingAllKeys(event);
+    connectAllKeys(event);
 })
 
-function connectingAllKeys(event)
+function connectAllKeys(event) //Making onClick on the Button
 {
     if('0123456789'.includes(event.key)){
-        handleNumericalClick(parseFloat(event.key));
+        callButtonOnClick(event.key);
     }
     switch (event.key) {
         case '+':
-            handleOperatorClick('plus');
+            callButtonOnClick('plus');
             break;
         case '-':
-            handleOperatorClick('minus');
+            callButtonOnClick('minus');
             break;
         case '*':
-            handleOperatorClick('multiply');
+            callButtonOnClick('multiply');
             break;
         case '/':
-            handleOperatorClick('divide');
+            callButtonOnClick('divide');
             break;
         case ',': case'.':
-            handleCommaClick();
+            callButtonOnClick('comma');
             break;
-        case '=': case 'Enter':
-            handleEqualsClick();
+        case 'Enter':
+            callButtonOnClick('equals');
             break;
-        case 'c': case 'C': case 'Delete': case 'Escape':
-            handleClearDisplayClick();
+        case 'Escape':
+            callButtonOnClick('c');
             break;
         case 'Backspace':
-            handleClearEntryClick();
+            callButtonOnClick('ce');
             break;
         case 'Control':
-            handleChangeSignClick();
+            callButtonOnClick('change');
             break;
     }
 }
@@ -83,48 +87,47 @@ function handleNumericalClick(digit)
 {
     if(isButtonAvailable.get(digit.toString()))
     {
-        var resultat = getDisplayText();
-        if(resultat == 'ERROR' || displayIsShowingPreviousNumber)
-            resultat = '0';
+        var display = getDisplayText();
+        if(displayIsShowingPreviousNumber)
+            display = '0';
 
-        switch(getNumberOfNumericalDigits(resultat))
+        switch(getCountOfNumericalDigits(display))
         {
             case 1:
-                if(resultat == '0')
-                    resultat = digit;
+                if(display == '0')
+                    display = digit;
                 else
-                    resultat = resultat.concat(digit); 
+                    display = display.concat(display); 
 
-                if(resultat != '0')
-                    setButtonsAvailability(true, 'ce', 'change', '0');
-                else
-                    setButtonsAvailability(false, 'ce', 'change', '0');
+                setButtonsAvailability(display!='0', 'ce', 'change', '0');
                 break;
-            case 9:
-                resultat = resultat.concat(digit);
-                setPositiveNumbersButtonsAvailability(false);
+            case maxDigits-1:
+                display = display.concat(digit);
+                setNonZeroNumbersButtonsAvailability(false);
                 setButtonsAvailability(false, 'comma', '0');
                 break;
-            case 10:
+            case maxDigits:
                 break;
             default:
-                resultat = resultat.concat(digit);
+                display = display.concat(digit);
                 break;
         }
 
-        setDisplayText(resultat);
+        setDisplayText(display);
         displayIsShowingPreviousNumber = false;
     }
 }
+
+// make function UpdateButtonStatus
 
 function handleCommaClick()
 {
     if(isButtonAvailable.get('comma'))
     {
         var display = getDisplayText();
-        if(display == 'ERROR' || displayIsShowingPreviousNumber)
+        if(displayIsShowingPreviousNumber)
             setDisplayText('0,');
-        else if(!display.includes(',') && getNumberOfNumericalDigits(display) <= 9)
+        else if(!display.includes(',') && getCountOfNumericalDigits(display) < maxDigits)
             setDisplayText(display.concat(','));
         displayIsShowingPreviousNumber = false;
         setButtonsAvailability(true, 'ce', '0');
@@ -137,10 +140,10 @@ function handleClearDisplayClick()
     if(isButtonAvailable.get('c'))
     {
         setDisplayText('0');
-        operator = '';
+        operation = '';
         setButtonHighLight('');
         setOperationButtonsAvailability(true);
-        setPositiveNumbersButtonsAvailability(true);
+        setNonZeroNumbersButtonsAvailability(true);
         setButtonsAvailability(false, '0', 'ce', 'change');
     }
 }
@@ -150,10 +153,10 @@ function handleClearEntryClick()
     if(isButtonAvailable.get('ce'))
     {
         var display = getDisplayText();
-        if(getNumberOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
+        if(getCountOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
         {
-            if(getNumberOfNumericalDigits(display) == 10){
-                setPositiveNumbersButtonsAvailability(true);
+            if(getCountOfNumericalDigits(display) == maxDigits){
+                setNonZeroNumbersButtonsAvailability(true);
                 setButtonsAvailability(true, '0');
             }
             display = display.slice(0,display.length-1);
@@ -183,7 +186,7 @@ function handleChangeSignClick()
     if(isButtonAvailable.get('change'))
     {
         var display = getDisplayText();
-        if(display != '0' && display != '0,' && display!= 'ERROR' && !displayIsShowingPreviousNumber)
+        if(display != '0' && display != '0,' && !displayIsShowingPreviousNumber)
         {
             if(display[0] == '-')
                 setDisplayText(display.slice(1,display.length));
@@ -193,29 +196,29 @@ function handleChangeSignClick()
     }
 }
 
-function handleOperatorClick(button)
+function handleOperationClick(button)
 {
     if(isButtonAvailable.get(button))
     {
-        if(operator != '' && !displayIsShowingPreviousNumber)
+        if(operation != '' && !displayIsShowingPreviousNumber)
             setOperationResult();
     }
     if(isButtonAvailable.get(button))
     {
-        if(operator == '')
+        if(operation == '')
             setFirstNumber();
-        operator = button;
-        console.log('firstNumber ' + firstNumber + ' ' + operator);
-        setButtonHighLight(operator);
+        operation = button;
+        console.log('firstNumber ' + firstNumber + ' ' + operation);
+        setButtonHighLight(operation);
     }
 }
 
 function handleEqualsClick()
 {
     if(isButtonAvailable.get('equals')){
-        if(operator != '' && !displayIsShowingPreviousNumber)
+        if(operation != '' && !displayIsShowingPreviousNumber)
             setOperationResult();
-        else if(operator != '' && displayIsShowingPreviousNumber)
+        else if(operation != '' && displayIsShowingPreviousNumber)
             throwError();
         else
             setFirstNumber();
@@ -229,7 +232,7 @@ function setFirstNumber()
     if(display[display.length-1]==',')
         setDisplayText(display.substring(0, display.length-1));
     displayIsShowingPreviousNumber = true;
-    setPositiveNumbersButtonsAvailability(true);
+    setNonZeroNumbersButtonsAvailability(true);
     setOperationButtonsAvailability(true);
     setButtonsAvailability(true, '0');
     setButtonsAvailability(false, 'ce', 'change');
@@ -239,9 +242,9 @@ function setOperationResult()
 {
     var display = getDisplayText();
     secondNumber = convertToFloat(display);
-    var result = getOperationResult(firstNumber, secondNumber, operator);
+    var result = getOperationResult(firstNumber, secondNumber, operation);
 
-    setPositiveNumbersButtonsAvailability(true);
+    setNonZeroNumbersButtonsAvailability(true);
     setOperationButtonsAvailability(true);
     setButtonsAvailability(true, '0');
     setButtonsAvailability(false, 'ce', 'change');
@@ -255,9 +258,18 @@ function setOperationResult()
         console.log('secondNumber ' + secondNumber + ' = result ' + result);
     }
 
-    operator = '';
+    operation = '';
     firstNumber = '';
     displayIsShowingPreviousNumber = true;
+}
+
+function getResultDisplay(number)
+{
+    if(Math.abs(number) >= 9999999999.5 || isNaN(number) || !(number==number) ) return 'ERROR';
+    if(Math.abs(number) <= 0.0000000005) return '0';
+    var resultat = number.toFixed(9);
+    resultat = correctDecimalDigits(resultat, maxDigits);
+    return resultat;
 }
 
 function throwError()
@@ -265,7 +277,7 @@ function throwError()
     setDisplayText('ERROR');
     console.log('= result ERROR');
     setButtonHighLight('');
-    setPositiveNumbersButtonsAvailability(false);
+    setNonZeroNumbersButtonsAvailability(false);
     setOperationButtonsAvailability(false);
     setButtonsAvailability(false, 'ce', 'change', '0');
 }
@@ -275,7 +287,7 @@ function setOperationButtonsAvailability(isAvailable)
     setButtonsAvailability(isAvailable, 'divide', 'multiply', 'minus', 'plus', 'equals', 'comma');
 }
 
-function setPositiveNumbersButtonsAvailability(isAvailable)
+function setNonZeroNumbersButtonsAvailability(isAvailable)
 {
     setButtonsAvailability(isAvailable, '1', '2', '3', '4', '5', '6', '7', '8', '9');
 }
@@ -283,16 +295,7 @@ function setPositiveNumbersButtonsAvailability(isAvailable)
 function setButtonsAvailability(isAvailable, ...params) 
 {
     for(let i =0; i<params.length; i++){
-        var button = getButtonElement(params[i]);
-        if(isAvailable){
-            button.classList.remove('not-working-button');
-            button.classList.add('working-button');
-        }
-        else
-        {
-            button.classList.remove('working-button');
-            button.classList.add('not-working-button');
-        }
+        setButtonStatusStyle(params[i], isAvailable);
         isButtonAvailable.set(params[i], isAvailable);
     }
 }
