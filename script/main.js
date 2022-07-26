@@ -1,22 +1,19 @@
 import {getCountOfNumericalDigits, convertToFloat, correctDecimalDigits, getOperationResult} from './mathHelper.js';
 import {getDisplayText, setDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle, callButtonOnClick} from './domCalls.js';
-import {updateButtonStatus} from './buttonStatusHelper.js';
+import {updateButtonStatus, initializeButtonStatus} from './buttonStatusHelper.js';
 
 var firstNumber;
 var secondNumber;
 var operation = '';
 var displayIsShowingPreviousNumber = false;
 var elementHighlighted = '';
-var isButtonAvailable = new Map();
 
 var maxDigits = 10;
 
 window.addEventListener('DOMContentLoaded', () => {
     connectAllButtons();
-    setOperationButtonsAvailability(true);
-    setNonZeroNumbersButtonsAvailability(true);
-    setButtonsAvailability(true, 'c');
-    setButtonsAvailability(false, '0', 'ce', 'change');
+    initializeButtonStatus();
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 });
 
 function connectAllButtons(){
@@ -39,7 +36,6 @@ function connectAllButtons(){
     getButtonElement('comma').onclick = function(){handleCommaClick()};
     getButtonElement('equals').onclick = function(){handleEqualsClick()};
     getButtonElement('c').onclick = function(){handleClearDisplayClick()};
-    updateButtonStatus();
 }
 
 document.addEventListener("keydown", function(event) {
@@ -47,7 +43,7 @@ document.addEventListener("keydown", function(event) {
     connectAllKeys(event);
 })
 
-function connectAllKeys(event) //Making onClick on the Button
+function connectAllKeys(event)
 {
     if('0123456789'.includes(event.key)){
         callButtonOnClick(event.key);
@@ -85,144 +81,101 @@ function connectAllKeys(event) //Making onClick on the Button
 
 function handleNumericalClick(digit)
 {
-    if(isButtonAvailable.get(digit.toString()))
+    var display = getDisplayText();
+    if(displayIsShowingPreviousNumber)
+        display = '0';
+
+    switch(getCountOfNumericalDigits(display))
     {
-        var display = getDisplayText();
-        if(displayIsShowingPreviousNumber)
-            display = '0';
-
-        switch(getCountOfNumericalDigits(display))
-        {
-            case 1:
-                if(display == '0')
-                    display = digit;
-                else
-                    display = display.concat(display); 
-
-                setButtonsAvailability(display!='0', 'ce', 'change', '0');
-                break;
-            case maxDigits-1:
-                display = display.concat(digit);
-                setNonZeroNumbersButtonsAvailability(false);
-                setButtonsAvailability(false, 'comma', '0');
-                break;
-            case maxDigits:
-                break;
-            default:
-                display = display.concat(digit);
-                break;
-        }
-
-        setDisplayText(display);
-        displayIsShowingPreviousNumber = false;
+        case 1:
+            if(display == '0')
+                display = digit;
+            else
+                display = display.concat(digit); 
+            break;
+        case maxDigits-1:
+            display = display.concat(digit);
+            break;
+        case maxDigits:
+            break;
+        default:
+            display = display.concat(digit);
+            break;
     }
-}
 
-// make function UpdateButtonStatus
+    setDisplayText(display);
+    displayIsShowingPreviousNumber = false;
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
+}
 
 function handleCommaClick()
 {
-    if(isButtonAvailable.get('comma'))
-    {
-        var display = getDisplayText();
-        if(displayIsShowingPreviousNumber)
-            setDisplayText('0,');
-        else if(!display.includes(',') && getCountOfNumericalDigits(display) < maxDigits)
-            setDisplayText(display.concat(','));
-        displayIsShowingPreviousNumber = false;
-        setButtonsAvailability(true, 'ce', '0');
-        setButtonsAvailability(false, 'comma');
-    }
+    var display = getDisplayText();
+    if(displayIsShowingPreviousNumber)
+        setDisplayText('0,');
+    else if(!display.includes(',') && getCountOfNumericalDigits(display) < maxDigits)
+        setDisplayText(display.concat(','));
+    displayIsShowingPreviousNumber = false;
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function handleClearDisplayClick()
 {
-    if(isButtonAvailable.get('c'))
-    {
-        setDisplayText('0');
-        operation = '';
-        setButtonHighLight('');
-        setOperationButtonsAvailability(true);
-        setNonZeroNumbersButtonsAvailability(true);
-        setButtonsAvailability(false, '0', 'ce', 'change');
-    }
+    setDisplayText('0');
+    operation = '';
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function handleClearEntryClick()
 {
-    if(isButtonAvailable.get('ce'))
+    var display = getDisplayText();
+    if(getCountOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
     {
-        var display = getDisplayText();
-        if(getCountOfNumericalDigits(display) > 1 && !displayIsShowingPreviousNumber)
-        {
-            if(getCountOfNumericalDigits(display) == maxDigits){
-                setNonZeroNumbersButtonsAvailability(true);
-                setButtonsAvailability(true, '0');
-            }
-            display = display.slice(0,display.length-1);
-            if(!display.includes(','))
-                setButtonsAvailability(true, 'comma');
-        }
-        else
-            display ='0';
-
-        setDisplayText(display);
-
-        if(display == '0')
-        {
-            setButtonsAvailability(true, 'comma');
-            setButtonsAvailability(false, '0', 'ce', 'change');
-        }
-        else if(display == '0,')
-        {
-            setButtonsAvailability(true, '0', 'ce')
-            setButtonsAvailability(false, 'change');
-        }
+        display = display.slice(0,display.length-1);
     }
+    else
+        display ='0';
+
+    setDisplayText(display);
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function handleChangeSignClick()
 {
-    if(isButtonAvailable.get('change'))
+    var display = getDisplayText();
+    if(display != '0' && display != '0,' && !displayIsShowingPreviousNumber)
     {
-        var display = getDisplayText();
-        if(display != '0' && display != '0,' && !displayIsShowingPreviousNumber)
-        {
-            if(display[0] == '-')
-                setDisplayText(display.slice(1,display.length));
-            else
-                setDisplayText('-'.concat(display));
-        }
+        if(display[0] == '-')
+            setDisplayText(display.slice(1,display.length));
+        else
+            setDisplayText('-'.concat(display));
     }
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function handleOperationClick(button)
 {
-    if(isButtonAvailable.get(button))
-    {
-        if(operation != '' && !displayIsShowingPreviousNumber)
-            setOperationResult();
-    }
-    if(isButtonAvailable.get(button))
+    if(operation != '' && !displayIsShowingPreviousNumber)
+        setOperationResult();
+    if(getDisplayText != 'ERROR')
     {
         if(operation == '')
             setFirstNumber();
         operation = button;
         console.log('firstNumber ' + firstNumber + ' ' + operation);
-        setButtonHighLight(operation);
     }
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function handleEqualsClick()
 {
-    if(isButtonAvailable.get('equals')){
-        if(operation != '' && !displayIsShowingPreviousNumber)
-            setOperationResult();
-        else if(operation != '' && displayIsShowingPreviousNumber)
-            throwError();
-        else
-            setFirstNumber();
-    }
+    if(operation != '' && !displayIsShowingPreviousNumber)
+        setOperationResult();
+    else if(operation != '' && displayIsShowingPreviousNumber)
+        throwError();
+    else
+        setFirstNumber();
+    elementHighlighted = updateButtonStatus(displayIsShowingPreviousNumber, elementHighlighted, operation);
 }
 
 function setFirstNumber()
@@ -232,10 +185,6 @@ function setFirstNumber()
     if(display[display.length-1]==',')
         setDisplayText(display.substring(0, display.length-1));
     displayIsShowingPreviousNumber = true;
-    setNonZeroNumbersButtonsAvailability(true);
-    setOperationButtonsAvailability(true);
-    setButtonsAvailability(true, '0');
-    setButtonsAvailability(false, 'ce', 'change');
 }
 
 function setOperationResult()
@@ -243,12 +192,6 @@ function setOperationResult()
     var display = getDisplayText();
     secondNumber = convertToFloat(display);
     var result = getOperationResult(firstNumber, secondNumber, operation);
-
-    setNonZeroNumbersButtonsAvailability(true);
-    setOperationButtonsAvailability(true);
-    setButtonsAvailability(true, '0');
-    setButtonsAvailability(false, 'ce', 'change');
-    setButtonHighLight('');
 
     var screenText = getResultDisplay(result);
     if(screenText == 'ERROR')
@@ -276,40 +219,5 @@ function throwError()
 {
     setDisplayText('ERROR');
     console.log('= result ERROR');
-    setButtonHighLight('');
-    setNonZeroNumbersButtonsAvailability(false);
-    setOperationButtonsAvailability(false);
-    setButtonsAvailability(false, 'ce', 'change', '0');
-}
-
-function setOperationButtonsAvailability(isAvailable)
-{
-    setButtonsAvailability(isAvailable, 'divide', 'multiply', 'minus', 'plus', 'equals', 'comma');
-}
-
-function setNonZeroNumbersButtonsAvailability(isAvailable)
-{
-    setButtonsAvailability(isAvailable, '1', '2', '3', '4', '5', '6', '7', '8', '9');
-}
-
-function setButtonsAvailability(isAvailable, ...params) 
-{
-    for(let i =0; i<params.length; i++){
-        setButtonStatusStyle(params[i], isAvailable);
-        isButtonAvailable.set(params[i], isAvailable);
-    }
-}
-
-function setButtonHighLight(text)
-{
-    var colorHighLight = '#31CFB2';
-    var defaultColor = '#80E3D1';
-
-    if(elementHighlighted != '')
-        setCellBackgroundColor(elementHighlighted, defaultColor)
-    if(text != '')
-    {
-        elementHighlighted = text;
-        setCellBackgroundColor(elementHighlighted, colorHighLight)
-    }
+    operation = '';
 }
