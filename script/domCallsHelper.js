@@ -36,3 +36,9 @@ export function callButtonOnClick(buttonName)
     var button = getButtonElement(buttonName);
     button.click();
 }
+
+export function disableAllButtons()
+{
+    var buttons = document.querySelectorAll('button');
+    buttons.forEach(button => button.disabled = true);
+}

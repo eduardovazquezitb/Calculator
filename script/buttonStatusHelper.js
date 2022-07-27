@@ -1,4 +1,4 @@
-import {getDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle} from './domCalls.js';
+import {getDisplayText, getButtonElement, setCellBackgroundColor, setButtonStatusStyle, disableAllButtons} from './domCallsHelper.js';
 import {getCountOfNumericalDigits} from './mathHelper.js';
 
 var elementHighlighted = '';
@@ -42,8 +42,7 @@ export function updateButtonStatus(displayIsShowingPreviousNumber, operation)
 
 export function initializeButtonStatus()
 {
-    var buttons = document.querySelectorAll('button');
-    buttons.forEach(button => button.disabled = true);
+    disableAllButtons();
 }
 
 function setButtonsAvailability(newAvailability, ...params) 

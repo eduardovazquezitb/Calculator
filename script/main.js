@@ -1,13 +1,11 @@
 import {getCountOfNumericalDigits, convertToFloat, getCountOfIntDigits, correctDecimalDigits, getOperationResult} from './mathHelper.js';
-import {getDisplayText, setDisplayText, getButtonElement, callButtonOnClick} from './domCalls.js';
+import {getDisplayText, setDisplayText, getButtonElement, callButtonOnClick} from './domCallsHelper.js';
 import {updateButtonStatus, initializeButtonStatus} from './buttonStatusHelper.js';
 
 var firstNumber;
 var operation = '';
 var displayIsShowingPreviousNumber = false;
-var elementHighlighted = '';
-
-var maxDigits = 10;
+const maxDigits = 10;
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeButtonStatus();
