@@ -15,7 +15,10 @@ export function getCountOfIntDigits(number, maxDigits)
     var text1 = number.toFixed(maxDigits - 1);
     var countIntegerDigits1 = text1.indexOf('.') - (text1[0]=='-' ? 1 : 0);
     var text2 = number.toFixed(maxDigits - countIntegerDigits1);
-    return text2.indexOf('.') - (text2[0]=='-' ? 1 : 0);
+    var countIntegerDigits2 = text2.indexOf('.');
+    if(countIntegerDigits2 == -1)
+        countIntegerDigits2 = text2.length;
+    return countIntegerDigits2 - (text2[0]=='-' ? 1 : 0);
 }
 
 export function correctDecimalDigits(text)

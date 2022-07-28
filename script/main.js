@@ -5,12 +5,12 @@ import {updateButtonStatus, initializeButtonStatus} from './buttonStatusHelper.j
 var firstNumber;
 var operation = '';
 var displayIsShowingPreviousNumber = false;
-const maxDigits = 10;
+const maxDigits = 10; // maxDigits > 1
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeButtonStatus();
     connectAllButtons();
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 });
 
 function connectAllButtons(){
@@ -85,7 +85,7 @@ function handleNumericalClick(digit)
         display = display.concat(digit);
     setDisplayText(display);
     displayIsShowingPreviousNumber = false;
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleCommaClick()
@@ -96,14 +96,14 @@ function handleCommaClick()
     else
         setDisplayText(display.concat(','));
     displayIsShowingPreviousNumber = false;
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleClearDisplayClick()
 {
     setDisplayText('0');
     operation = '';
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleClearEntryClick()
@@ -114,7 +114,7 @@ function handleClearEntryClick()
     else
         display ='0';
     setDisplayText(display);
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleChangeSignClick()
@@ -124,7 +124,7 @@ function handleChangeSignClick()
         setDisplayText(display.slice(1,display.length));
     else
         setDisplayText('-'.concat(display));
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleOperationClick(button)
@@ -138,7 +138,7 @@ function handleOperationClick(button)
         operation = button;
         console.log('firstNumber ' + firstNumber + ' ' + operation);
     }
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function handleEqualsClick()
@@ -149,7 +149,7 @@ function handleEqualsClick()
         throwError();
     else
         setFirstNumber();
-    updateButtonStatus(displayIsShowingPreviousNumber, operation);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
 }
 
 function setFirstNumber()
@@ -181,8 +181,8 @@ function setOperationResult()
 
 function getResultDisplay(number)
 {
-    if(Math.abs(number) >= 9999999999.5 || isNaN(number) ) return 'ERROR';
-    if(Math.abs(number) <= 0.0000000005) return '0';
+    if(Math.abs(number) >= Math.pow(10, maxDigits)-0.5 || isNaN(number) ) return 'ERROR';
+    if(Math.abs(number) <= 5*Math.pow(10, -maxDigits)) return '0';
     var numIntDigits = getCountOfIntDigits(number, maxDigits);
     var resultat = number.toFixed(maxDigits-numIntDigits);
     resultat = correctDecimalDigits(resultat);
