@@ -1,6 +1,9 @@
 export function getCountOfNumericalDigits(text)
 {
-    return text.length - (text.includes(',') ? 1 : 0 ) - (text[0] == '-' ? 1 : 0);
+    var result = text.length;
+    if(text.includes(',')) result--;
+    if(text[0] == '-') result--;
+    return result;
 }
 
 export function convertToFloat(text)
@@ -10,18 +13,29 @@ export function convertToFloat(text)
     return parseFloat(text.replace(',','.'));
 }
 
-export function getCountOfIntDigits(number, maxDigits)
+export function getApproximationToMaxDigits(number, maxDigits)                  // Case number = 99.999, maxDigits = 4
 {
-    var text1 = number.toFixed(maxDigits - 1);
-    var countIntegerDigits1 = text1.indexOf('.') - (text1[0]=='-' ? 1 : 0);
-    var text2 = number.toFixed(maxDigits - countIntegerDigits1);
-    var countIntegerDigits2 = text2.indexOf('.');
-    if(countIntegerDigits2 == -1)
-        countIntegerDigits2 = text2.length;
-    return countIntegerDigits2 - (text2[0]=='-' ? 1 : 0);
+    var firstApproximation = number.toFixed(maxDigits-1);                       //  "99.999" -> Le sobra un dígito
+    var countIntegerDigits1 = getCountOfIntegerDigits(firstApproximation);      // 2
+    if(countIntegerDigits1 > maxDigits) return firstApproximation;
+    var secondApproximation = number.toFixed(maxDigits-countIntegerDigits1);    // "100.00"  -> Le sobra un dígito
+    var countIntegerDigits2 = getCountOfIntegerDigits(secondApproximation);     // 3
+    if(countIntegerDigits2 > maxDigits) return secondApproximation;
+    var thirdApproximation = number.toFixed(maxDigits - countIntegerDigits2);   // "100.0" OK
+    return thirdApproximation;
 }
 
-export function correctDecimalDigits(text)
+export function getCountOfIntegerDigits(text)
+{
+    var result = text.indexOf('.');
+    if(result == -1)
+        result = text.length;
+    if(text[0] == '-')
+        result--;
+    return result;
+}
+
+export function removeZerosFromRight(text)
 {
     var partial = text.replace('.',',');
     while(isDecimalPartEmpty(partial))

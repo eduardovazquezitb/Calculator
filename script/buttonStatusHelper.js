@@ -3,7 +3,7 @@ import {getCountOfNumericalDigits} from './mathHelper.js';
 
 var elementHighlighted = '';
 
-export function updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits)
+export function updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigitsOnDisplay)
 {
     var display = getDisplayText();
 
@@ -23,7 +23,7 @@ export function updateButtonStatus(displayIsShowingPreviousNumber, operation, ma
     }
     else
     {
-        var areNumbersAvailable = getCountOfNumericalDigits(display) < maxDigits;
+        var areNumbersAvailable = getCountOfNumericalDigits(display) < maxDigitsOnDisplay;
         var isZeroAvailable = areNumbersAvailable && display != '0';
         var isCommaAvailable = areNumbersAvailable && !display.includes(',');
         var isClearEntryAvailable = display != '0';

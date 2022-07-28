@@ -1,16 +1,16 @@
-import {getCountOfNumericalDigits, convertToFloat, getCountOfIntDigits, correctDecimalDigits, getOperationResult} from './mathHelper.js';
+import {getCountOfNumericalDigits, convertToFloat, getApproximationToMaxDigits, getCountOfIntegerDigits, removeZerosFromRight, getOperationResult} from './mathHelper.js';
 import {getDisplayText, setDisplayText, getButtonElement, callButtonOnClick} from './domCallsHelper.js';
 import {updateButtonStatus, initializeButtonStatus} from './buttonStatusHelper.js';
 
 var firstNumber;
 var operation = '';
 var displayIsShowingPreviousNumber = false;
-const maxDigits = 10; // maxDigits > 1
+const MAX_DIGITS_ON_DISPLAY = 10; // MAX_DIGITS_ON_DISPLAY > 1
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeButtonStatus();
     connectAllButtons();
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 });
 
 function connectAllButtons(){
@@ -85,7 +85,7 @@ function handleNumericalClick(digit)
         display = display.concat(digit);
     setDisplayText(display);
     displayIsShowingPreviousNumber = false;
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleCommaClick()
@@ -96,14 +96,14 @@ function handleCommaClick()
     else
         setDisplayText(display.concat(','));
     displayIsShowingPreviousNumber = false;
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleClearDisplayClick()
 {
     setDisplayText('0');
     operation = '';
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleClearEntryClick()
@@ -114,7 +114,7 @@ function handleClearEntryClick()
     else
         display ='0';
     setDisplayText(display);
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleChangeSignClick()
@@ -124,21 +124,21 @@ function handleChangeSignClick()
         setDisplayText(display.slice(1,display.length));
     else
         setDisplayText('-'.concat(display));
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleOperationClick(button)
 {
     if(operation != '' && !displayIsShowingPreviousNumber)
         setOperationResult();
-    if(getDisplayText != 'ERROR')
+    if(getDisplayText() != 'ERROR')
     {
         if(operation == '')
             setFirstNumber();
         operation = button;
         console.log('firstNumber ' + firstNumber + ' ' + operation);
     }
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function handleEqualsClick()
@@ -149,7 +149,7 @@ function handleEqualsClick()
         throwError();
     else
         setFirstNumber();
-    updateButtonStatus(displayIsShowingPreviousNumber, operation, maxDigits);
+    updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
 function setFirstNumber()
@@ -181,12 +181,15 @@ function setOperationResult()
 
 function getResultDisplay(number)
 {
-    if(Math.abs(number) >= Math.pow(10, maxDigits)-0.5 || isNaN(number) ) return 'ERROR';
-    if(Math.abs(number) <= 5*Math.pow(10, -maxDigits)) return '0';
-    var numIntDigits = getCountOfIntDigits(number, maxDigits);
-    var resultat = number.toFixed(maxDigits-numIntDigits);
-    resultat = correctDecimalDigits(resultat);
-    return resultat;
+    if(isNaN(number) || ! isFinite(number)) return 'ERROR';
+2.
+    var resultDisplay = getApproximationToMaxDigits(number, MAX_DIGITS_ON_DISPLAY);
+    var countIntegerDigits = getCountOfIntegerDigits(resultDisplay);
+
+    if(countIntegerDigits > MAX_DIGITS_ON_DISPLAY) return 'ERROR';
+
+    resultDisplay = removeZerosFromRight(resultDisplay);
+    return resultDisplay;
 }
 
 function throwError()
