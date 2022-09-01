@@ -182,11 +182,11 @@ function setOperationResult()
 function getResultDisplay(number)
 {
     if(isNaN(number) || ! isFinite(number)) return 'ERROR';
-2.
+
     var resultDisplay = getApproximationToMaxDigits(number, MAX_DIGITS_ON_DISPLAY);
     var countIntegerDigits = getCountOfIntegerDigits(resultDisplay);
 
-    if(countIntegerDigits > MAX_DIGITS_ON_DISPLAY) return 'ERROR';
+    if(countIntegerDigits == 'ERROR') return 'ERROR';
 
     resultDisplay = removeZerosFromRight(resultDisplay);
     return resultDisplay;

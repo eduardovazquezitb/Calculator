@@ -1,7 +1,7 @@
 export function getCountOfNumericalDigits(text)
 {
     var result = text.length;
-    if(text.includes(',')) result--;
+    if(text.includes(',') || text.includes('.')) result--;
     if(text[0] == '-') result--;
     return result;
 }
@@ -13,16 +13,33 @@ export function convertToFloat(text)
     return parseFloat(text.replace(',','.'));
 }
 
-export function getApproximationToMaxDigits(number, maxDigits)                  // Case number = 99.999, maxDigits = 4
+/*export function getApproximationToMaxDigits(number, maxDigits)                  // Case number = 99.999, maxDigits = 4
 {
     var firstApproximation = number.toFixed(maxDigits-1);                       //  "99.999" -> Le sobra un dígito
     var countIntegerDigits1 = getCountOfIntegerDigits(firstApproximation);      // 2
-    if(countIntegerDigits1 > maxDigits) return firstApproximation;
+    if(countIntegerDigits1 > maxDigits) return 'ERROR';
     var secondApproximation = number.toFixed(maxDigits-countIntegerDigits1);    // "100.00"  -> Le sobra un dígito
     var countIntegerDigits2 = getCountOfIntegerDigits(secondApproximation);     // 3
-    if(countIntegerDigits2 > maxDigits) return secondApproximation;
+    if(countIntegerDigits2 > maxDigits) return 'ERROR';
     var thirdApproximation = number.toFixed(maxDigits - countIntegerDigits2);   // "100.0" OK
     return thirdApproximation;
+}*/
+
+export function getApproximationToMaxDigits(number, maxDigits)
+{
+    return calculateApproximationToMaxDigits(number, maxDigits-1, maxDigits);
+}
+
+export function calculateApproximationToMaxDigits(number, countDecimalDigits, maxDigits)
+{
+    var stringApproximation = number.toFixed(countDecimalDigits);
+    var countIntegerDigits = getCountOfIntegerDigits(stringApproximation);
+    console.log('número: ' + number + '; approximation: ' + stringApproximation + '; countIntegerDigits: ' + countIntegerDigits + '; getCountNumericalDigits:' + getCountOfNumericalDigits(stringApproximation));
+    if(countIntegerDigits > maxDigits)
+        return 'ERROR';
+    if(getCountOfNumericalDigits(stringApproximation) > maxDigits)
+        return calculateApproximationToMaxDigits(number, maxDigits-countIntegerDigits, maxDigits);
+    return stringApproximation;
 }
 
 export function getCountOfIntegerDigits(text)
