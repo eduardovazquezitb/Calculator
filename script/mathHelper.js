@@ -34,7 +34,6 @@ function calculateApproximationToMaxDigits(number, countDecimalDigits, maxDigits
 {
     var stringApproximation = number.toFixed(countDecimalDigits);
     var countIntegerDigits = getCountOfIntegerDigits(stringApproximation);
-    console.log('número: ' + number + '; approximation: ' + stringApproximation + '; countIntegerDigits: ' + countIntegerDigits + '; getCountNumericalDigits:' + getCountOfNumericalDigits(stringApproximation));
     if(countIntegerDigits > maxDigits)
         return 'ERROR';
     if(getCountOfNumericalDigits(stringApproximation) > maxDigits)
