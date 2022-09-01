@@ -30,7 +30,7 @@ export function getApproximationToMaxDigits(number, maxDigits)
     return calculateApproximationToMaxDigits(number, maxDigits-1, maxDigits);
 }
 
-export function calculateApproximationToMaxDigits(number, countDecimalDigits, maxDigits)
+function calculateApproximationToMaxDigits(number, countDecimalDigits, maxDigits)
 {
     var stringApproximation = number.toFixed(countDecimalDigits);
     var countIntegerDigits = getCountOfIntegerDigits(stringApproximation);
