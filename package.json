@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:e2e": "cucumber-js --require features/cucumber.conf.js --require features/*.steps.js --format @cucumber/pretty-formatter --tags \"not @Manual\" --parallel 4"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
   },
   "homepage": "https://github.com/eduardovazquezitb/Calculator#readme",
   "devDependencies": {
-    "cucumber": "^6.0.7",
+    "@cucumber/pretty-formatter": "^1.0.0",
+    "@playwright/test": "^1.25.1",
+    "cucumber-report": "^1.1.4",
     "jest": "^28.1.2"
   },
   "dependencies": {
@@ -29,7 +32,7 @@
     "argparse": "^1.0.10",
     "babel-jest": "^28.1.2",
     "babel-plugin-istanbul": "^6.1.1",
-    "babel-plugin-jest-hoist": "^28.1.1",
+    "babel-plugin-jest-hoist": " --format @cucumber/pretty-formatter --format html:tests/reports/cucumber-report.html ^28.1.1",
     "babel-preset-current-node-syntax": "^1.0.1",
     "babel-preset-jest": "^28.1.1",
     "balanced-match": "^1.0.2",
@@ -162,6 +165,7 @@
     "picomatch": "^2.3.1",
     "pirates": "^4.0.5",
     "pkg-dir": "^4.2.0",
+    "playwright": "^1.25.1",
     "pretty-format": "^28.1.1",
     "prompts": "^2.4.2",
     "react-is": "^18.2.0",
