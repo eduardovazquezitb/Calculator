@@ -8,5 +8,6 @@ Given('a user opens the app', async () => {
 });
 
 Then('the display should show the following value: {string}', async(string) => {
-  expect(page.locator('data-testid=display')).toBe(string);
+  const display = await page.locator('data-testid=display').innerText();
+  expect(display).toBe(string);
 });
