@@ -18,8 +18,8 @@ export function updateButtonStatus(displayIsShowingPreviousNumber, operation, ma
     {
         setNonZeroNumbersButtonsAvailability(true);
         setOperationButtonsAvailability(true);
-        setButtonsAvailability(true, '0', 'c', 'comma');
-        setButtonsAvailability(false, 'change', 'ce');
+        setButtonsAvailability(true, 'c', '0');
+        setButtonsAvailability(false, 'change', 'ce', 'comma');
     }
     else
     {

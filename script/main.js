@@ -103,6 +103,7 @@ function handleClearDisplayClick()
 {
     setDisplayText('0');
     operation = '';
+    displayIsShowingPreviousNumber = false;
     updateButtonStatus(displayIsShowingPreviousNumber, operation, MAX_DIGITS_ON_DISPLAY);
 }
 
